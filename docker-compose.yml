@@ -1,0 +1,59 @@
+services:
+  # ===== MySQL 数据库 =====
+  mysql:
+    image: mysql:8.0
+    container_name: xatu-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: xatu_root_2026
+      MYSQL_DATABASE: xatu_book_exchange
+      MYSQL_CHARACTER_SET_SERVER: utf8mb4
+      MYSQL_COLLATION_SERVER: utf8mb4_unicode_ci
+    ports:
+      - "127.0.0.1:3307:3306"   # 宿主机不暴露 3306，只内部访问
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ===== Redis 缓存 =====
+  redis:
+    image: redis:7-alpine
+    container_name: xatu-redis
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ===== Go 后端应用 =====
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: xatu-app
+    restart: unless-stopped
+    ports:
+      - "80:8080"              # 宿主机 80 → 容器 8080（直接裸跑，不用再写 :8090）
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - uploads_data:/app/uploads/images
+    environment:
+      - TZ=Asia/Shanghai
+
+volumes:
+  mysql_data:
+  redis_data:
+  uploads_data:

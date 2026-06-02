@@ -1,0 +1,33 @@
+server:
+  port: 8090
+  mode: debug          # debug / release / test
+
+mysql:
+  host: 127.0.0.1
+  port: 3306
+  user: root
+  password: "G20050111g"
+  dbname: xatu_book_exchange
+  charset: utf8mb4
+  max_idle_conns: 10
+  max_open_conns: 100
+
+redis:
+  host: 127.0.0.1
+  port: 6379
+  password: ""
+  db: 0
+
+jwt:
+  secret: "xatu-book-exchange-jwt-secret-2026"
+  access_expire: 2h      # access_token 过期时间
+  refresh_expire: 168h   # refresh_token 过期时间（7天）
+
+upload:
+  max_size: 5            # 单文件最大 MB
+  dir: "./uploads/images"
+  allow_types:
+    - ".jpg"
+    - ".jpeg"
+    - ".png"
+    - ".webp"

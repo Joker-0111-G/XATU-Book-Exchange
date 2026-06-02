@@ -1,0 +1,10 @@
+# 不需要打包进 Docker 镜像的文件
+.git/
+.gitignore
+*.md
+docs/
+.idea/
+.vscode/
+__pycache__/
+*.pyc
+.env.local
