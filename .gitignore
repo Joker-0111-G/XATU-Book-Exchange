@@ -1,0 +1,54 @@
+# ============================================
+# XATU-Book-Exchange .gitignore
+# ============================================
+
+# ===== Go =====
+# 编译产物
+backend/xatu-server
+backend/xatu-server.exe
+backend/main
+*.out
+*.test
+*.test.exe
+
+# Vendor（未启用 go vendor 可忽略这行）
+/vendor/
+
+# IDE / 编辑器
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ===== 运行时数据 =====
+# 上传的图片（不应入版本库）
+backend/uploads/images/*
+!backend/uploads/.gitkeep
+
+# 日志
+*.log
+/tmp/
+
+# ===== 部署相关 =====
+# Docker 配置是独立于开发配置的
+backend/config/config.docker.yaml
+docker-compose.override.yml
+
+# 传输的压缩包
+*.tar.gz
+*.zip
+
+# ===== 环境 / 密钥 =====
+.env
+.env.local
+*.pem
+*.key
+
+# ===== OS 文件 =====
+.DS_Store
+Thumbs.db
+Desktop.ini
+ehthumbs.db
