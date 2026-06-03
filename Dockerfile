@@ -8,7 +8,8 @@ WORKDIR /build
 
 # 先复制 go.mod/go.sum 充分利用 Docker 缓存
 COPY backend/go.mod backend/go.sum ./
-RUN go mod download
+RUN go env -w GOPROXY=https://goproxy.cn,direct \
+    && go mod download
 
 # 复制后端源码
 COPY backend/ .
