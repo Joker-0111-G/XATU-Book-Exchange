@@ -1,12 +1,20 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>XATU 二手书交易平台</title>
   <style>
     /* ===== Reset & Base ===== */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     :root {
       --primary: #4f46e5;
       --primary-light: #818cf8;
@@ -30,744 +38,2002 @@
       --gray-900: #111827;
       --radius: 10px;
       --radius-sm: 6px;
-      --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
-      --shadow-md: 0 4px 6px -1px rgba(0,0,0,.07), 0 2px 4px -1px rgba(0,0,0,.04);
-      --shadow-lg: 0 10px 25px -3px rgba(0,0,0,.1), 0 4px 10px -2px rgba(0,0,0,.05);
-      --shadow-xl: 0 20px 40px -5px rgba(0,0,0,.12);
+      --shadow: 0 1px 3px rgba(0, 0, 0, .08), 0 1px 2px rgba(0, 0, 0, .06);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, .07), 0 2px 4px -1px rgba(0, 0, 0, .04);
+      --shadow-lg: 0 10px 25px -3px rgba(0, 0, 0, .1), 0 4px 10px -2px rgba(0, 0, 0, .05);
+      --shadow-xl: 0 20px 40px -5px rgba(0, 0, 0, .12);
     }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif; background: linear-gradient(180deg, #f0f2ff 0%, var(--gray-50) 300px); color: var(--gray-800); line-height: 1.6; min-height: 100vh; }
-    a { color: var(--primary); text-decoration: none; transition: color .15s; }
-    a:hover { color: var(--primary-dark); }
-    img { max-width: 100%; display: block; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+      background: linear-gradient(180deg, #f0f2ff 0%, var(--gray-50) 300px);
+      color: var(--gray-800);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    a {
+      color: var(--primary);
+      text-decoration: none;
+      transition: color .15s;
+    }
+
+    a:hover {
+      color: var(--primary-dark);
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
 
     /* ===== Scrollbar ===== */
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: var(--gray-300); border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--gray-400); }
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--gray-300);
+      border-radius: 3px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--gray-400);
+    }
 
     /* ===== Layout ===== */
-    #app { display: flex; flex-direction: column; min-height: 100vh; }
+    #app {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
 
     /* ===== Navbar ===== */
-    .navbar { background: rgba(255,255,255,.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(229,231,235,.6); padding: 0 1.5rem; position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 3px rgba(0,0,0,.04); }
-    .navbar-inner { display: flex; align-items: center; height: 64px; max-width: 1200px; margin: 0 auto; gap: .5rem; }
-    .navbar .logo { font-weight: 800; font-size: 1.35rem; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-right: 1.5rem; cursor: pointer; white-space: nowrap; letter-spacing: -.02em; }
-    .navbar .logo span { background: none; -webkit-text-fill-color: var(--gray-700); }
-    .nav-links { display: flex; gap: .125rem; flex-wrap: wrap; }
-    .nav-links a { padding: .5rem .85rem; border-radius: var(--radius); color: var(--gray-500); font-size: .875rem; font-weight: 500; transition: all .2s; cursor: pointer; position: relative; }
-    .nav-links a:hover { background: var(--gray-100); color: var(--gray-700); }
-    .nav-links a.active { background: rgba(79,70,229,.08); color: var(--primary); font-weight: 600; }
-    .nav-links a.active::after { content: ''; position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%); width: 16px; height: 2px; background: var(--primary); border-radius: 1px; }
-    .navbar-right { margin-left: auto; display: flex; align-items: center; gap: .75rem; }
-    .navbar-right .user-info { font-size: .875rem; color: var(--gray-600); display: flex; align-items: center; gap: .5rem; }
-    .navbar-right .user-info .avatar-mini { width: 28px; height: 28px; border-radius: 50%; background: var(--primary-gradient); color: #fff; display: flex; align-items: center; justify-content: center; font-size: .75rem; font-weight: 700; }
-    .btn-logout { padding: .4rem 1rem; border: 1px solid var(--gray-200); border-radius: var(--radius); background: #fff; cursor: pointer; font-size: .8rem; color: var(--gray-500); transition: all .2s; font-weight: 500; }
-    .btn-logout:hover { border-color: var(--danger); color: var(--danger); background: var(--danger-bg); }
-    .nav-auth a { font-size: .875rem; font-weight: 500; padding: .4rem .85rem; border-radius: var(--radius); background: var(--primary-gradient); color: #fff !important; }
-    .nav-auth a:hover { opacity: .9; }
+    .navbar {
+      background: rgba(255, 255, 255, .85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(229, 231, 235, .6);
+      padding: 0 1.5rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, .04);
+    }
+
+    .navbar-inner {
+      display: flex;
+      align-items: center;
+      height: 64px;
+      max-width: 1200px;
+      margin: 0 auto;
+      gap: .5rem;
+    }
+
+    .navbar .logo {
+      font-weight: 800;
+      font-size: 1.35rem;
+      background: var(--primary-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-right: 1.5rem;
+      cursor: pointer;
+      white-space: nowrap;
+      letter-spacing: -.02em;
+    }
+
+    .navbar .logo span {
+      background: none;
+      -webkit-text-fill-color: var(--gray-700);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: .125rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      padding: .5rem .85rem;
+      border-radius: var(--radius);
+      color: var(--gray-500);
+      font-size: .875rem;
+      font-weight: 500;
+      transition: all .2s;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .nav-links a:hover {
+      background: var(--gray-100);
+      color: var(--gray-700);
+    }
+
+    .nav-links a.active {
+      background: rgba(79, 70, 229, .08);
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .nav-links a.active::after {
+      content: '';
+      position: absolute;
+      bottom: 2px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 16px;
+      height: 2px;
+      background: var(--primary);
+      border-radius: 1px;
+    }
+
+    .navbar-right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+    }
+
+    .navbar-right .user-info {
+      font-size: .875rem;
+      color: var(--gray-600);
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+
+    .navbar-right .user-info .avatar-mini {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--primary-gradient);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .75rem;
+      font-weight: 700;
+    }
+
+    .btn-logout {
+      padding: .4rem 1rem;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius);
+      background: #fff;
+      cursor: pointer;
+      font-size: .8rem;
+      color: var(--gray-500);
+      transition: all .2s;
+      font-weight: 500;
+    }
+
+    .btn-logout:hover {
+      border-color: var(--danger);
+      color: var(--danger);
+      background: var(--danger-bg);
+    }
+
+    .nav-auth a {
+      font-size: .875rem;
+      font-weight: 500;
+      padding: .4rem .85rem;
+      border-radius: var(--radius);
+      background: var(--primary-gradient);
+      color: #fff !important;
+    }
+
+    .nav-auth a:hover {
+      opacity: .9;
+    }
 
     /* ===== Main Content ===== */
-    .main-content { flex: 1; max-width: 1200px; margin: 0 auto; padding: 1.5rem; width: 100%; }
+    .main-content {
+      flex: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1.5rem;
+      width: 100%;
+    }
 
     /* ===== Page transitions ===== */
-    .page { display: none; animation: fadeUp .35s ease; }
-    .page.active { display: block; }
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    .page {
+      display: none;
+      animation: fadeUp .35s ease;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
     /* ===== Cards ===== */
-    .card { background: #fff; border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.5rem; margin-bottom: 1rem; border: 1px solid rgba(229,231,235,.5); }
-    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
-    .card-title { font-size: 1.125rem; font-weight: 700; color: var(--gray-800); }
+    .card {
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      border: 1px solid rgba(229, 231, 235, .5);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .card-title {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--gray-800);
+    }
 
     /* ===== Buttons ===== */
-    .btn { display: inline-flex; align-items: center; justify-content: center; padding: .5rem 1.125rem; border-radius: var(--radius); font-size: .875rem; font-weight: 600; border: 1px solid transparent; cursor: pointer; transition: all .2s; gap: .375rem; line-height: 1.4; }
-    .btn-primary { background: var(--primary-gradient); color: #fff; border-color: transparent; box-shadow: 0 1px 2px rgba(79,70,229,.2); }
-    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 8px rgba(79,70,229,.3); }
-    .btn-outline { background: #fff; color: var(--gray-600); border-color: var(--gray-200); }
-    .btn-outline:hover { border-color: var(--primary); color: var(--primary); background: rgba(79,70,229,.04); }
-    .btn-success { background: var(--success); color: #fff; }
-    .btn-success:hover { opacity: .9; transform: translateY(-1px); }
-    .btn-danger { background: var(--danger); color: #fff; }
-    .btn-danger:hover { opacity: .9; transform: translateY(-1px); }
-    .btn-sm { padding: .3rem .65rem; font-size: .78rem; border-radius: var(--radius-sm); }
-    .btn:disabled { opacity: .5; cursor: not-allowed; transform: none !important; }
-    .btn-group { display: flex; gap: .5rem; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: .5rem 1.125rem;
+      border-radius: var(--radius);
+      font-size: .875rem;
+      font-weight: 600;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all .2s;
+      gap: .375rem;
+      line-height: 1.4;
+    }
+
+    .btn-primary {
+      background: var(--primary-gradient);
+      color: #fff;
+      border-color: transparent;
+      box-shadow: 0 1px 2px rgba(79, 70, 229, .2);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(79, 70, 229, .3);
+    }
+
+    .btn-outline {
+      background: #fff;
+      color: var(--gray-600);
+      border-color: var(--gray-200);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: rgba(79, 70, 229, .04);
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: #fff;
+    }
+
+    .btn-success:hover {
+      opacity: .9;
+      transform: translateY(-1px);
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    .btn-danger:hover {
+      opacity: .9;
+      transform: translateY(-1px);
+    }
+
+    .btn-sm {
+      padding: .3rem .65rem;
+      font-size: .78rem;
+      border-radius: var(--radius-sm);
+    }
+
+    .btn:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: .5rem;
+      flex-wrap: wrap;
+    }
 
     /* ===== Forms ===== */
-    .form-group { margin-bottom: 1rem; }
-    .form-group label { display: block; font-size: .85rem; font-weight: 600; color: var(--gray-700); margin-bottom: .375rem; }
-    .form-control { width: 100%; padding: .55rem .8rem; border: 1.5px solid var(--gray-200); border-radius: var(--radius-sm); font-size: .875rem; transition: all .2s; background: #fff; }
-    .form-control:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79,70,229,.12); }
-    textarea.form-control { resize: vertical; min-height: 80px; }
-    select.form-control { appearance: auto; }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-    .form-inline { display: flex; gap: .5rem; align-items: flex-end; flex-wrap: wrap; }
-    .form-inline .form-group { margin-bottom: 0; }
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: .85rem;
+      font-weight: 600;
+      color: var(--gray-700);
+      margin-bottom: .375rem;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: .55rem .8rem;
+      border: 1.5px solid var(--gray-200);
+      border-radius: var(--radius-sm);
+      font-size: .875rem;
+      transition: all .2s;
+      background: #fff;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, .12);
+    }
+
+    textarea.form-control {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    select.form-control {
+      appearance: auto;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .form-inline {
+      display: flex;
+      gap: .5rem;
+      align-items: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .form-inline .form-group {
+      margin-bottom: 0;
+    }
 
     /* ===== Auth Pages ===== */
-    .auth-page { display: flex; justify-content: center; align-items: center; min-height: 80vh; background: linear-gradient(135deg, #eef2ff 0%, #f5f3ff 100%); }
-    .auth-card { width: 100%; max-width: 420px; }
-    .auth-card .card { padding: 2rem; border: none; box-shadow: var(--shadow-xl); }
-    .auth-card .card::before { content: '📚'; display: block; text-align: center; font-size: 2.5rem; margin-bottom: .5rem; }
-    .auth-tabs { display: flex; margin-bottom: 1.5rem; border-bottom: 2px solid var(--gray-100); }
-    .auth-tabs button { flex: 1; padding: .75rem; border: none; background: none; font-size: .95rem; font-weight: 600; color: var(--gray-400); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all .2s; }
-    .auth-tabs button.active { color: var(--primary); border-bottom-color: var(--primary); }
+    .auth-page {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 80vh;
+      background: linear-gradient(135deg, #eef2ff 0%, #f5f3ff 100%);
+    }
+
+    .auth-card {
+      width: 100%;
+      max-width: 420px;
+    }
+
+    .auth-card .card {
+      padding: 2rem;
+      border: none;
+      box-shadow: var(--shadow-xl);
+    }
+
+    .auth-card .card::before {
+      content: '📚';
+      display: block;
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: .5rem;
+    }
+
+    .auth-tabs {
+      display: flex;
+      margin-bottom: 1.5rem;
+      border-bottom: 2px solid var(--gray-100);
+    }
+
+    .auth-tabs button {
+      flex: 1;
+      padding: .75rem;
+      border: none;
+      background: none;
+      font-size: .95rem;
+      font-weight: 600;
+      color: var(--gray-400);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: all .2s;
+    }
+
+    .auth-tabs button.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
 
     /* ===== Book Grid ===== */
-    .book-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1.25rem; }
-    .book-card { background: #fff; border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; cursor: pointer; transition: all .25s; border: 1px solid rgba(229,231,235,.4); }
-    .book-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: rgba(79,70,229,.1); }
-    .book-card-img { height: 180px; background: linear-gradient(135deg, var(--gray-100), var(--gray-50)); display: flex; align-items: center; justify-content: center; overflow: hidden; }
-    .book-card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .3s; }
-    .book-card:hover .book-card-img img { transform: scale(1.05); }
-    .book-card-img .no-img { color: var(--gray-300); font-size: 3rem; }
-    .book-card-body { padding: .85rem 1rem; }
-    .book-card-body h3 { font-size: 1rem; font-weight: 600; margin-bottom: .2rem; color: var(--gray-800); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .book-card-body .author { font-size: .8rem; color: var(--gray-400); margin-bottom: .4rem; }
-    .book-card-body .price { font-size: 1.2rem; font-weight: 700; color: var(--danger); }
-    .book-card-body .price::before { content: '¥'; font-size: .85rem; }
-    .book-card-body .meta { display: flex; justify-content: space-between; align-items: center; font-size: .78rem; color: var(--gray-400); margin-top: .35rem; }
-    .book-card-body .condition-badge { display: inline-block; padding: .1rem .45rem; border-radius: 4px; font-size: .72rem; background: var(--gray-50); color: var(--gray-500); }
+    .book-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .book-card {
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      cursor: pointer;
+      transition: all .25s;
+      border: 1px solid rgba(229, 231, 235, .4);
+    }
+
+    .book-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+      border-color: rgba(79, 70, 229, .1);
+    }
+
+    .book-card-img {
+      height: 180px;
+      background: linear-gradient(135deg, var(--gray-100), var(--gray-50));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .book-card-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform .3s;
+    }
+
+    .book-card:hover .book-card-img img {
+      transform: scale(1.05);
+    }
+
+    .book-card-img .no-img {
+      color: var(--gray-300);
+      font-size: 3rem;
+    }
+
+    .book-card-body {
+      padding: .85rem 1rem;
+    }
+
+    .book-card-body h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: .2rem;
+      color: var(--gray-800);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .book-card-body .author {
+      font-size: .8rem;
+      color: var(--gray-400);
+      margin-bottom: .4rem;
+    }
+
+    .book-card-body .price {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--danger);
+    }
+
+    .book-card-body .price::before {
+      content: '¥';
+      font-size: .85rem;
+    }
+
+    .book-card-body .meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: .78rem;
+      color: var(--gray-400);
+      margin-top: .35rem;
+    }
+
+    .book-card-body .condition-badge {
+      display: inline-block;
+      padding: .1rem .45rem;
+      border-radius: 4px;
+      font-size: .72rem;
+      background: var(--gray-50);
+      color: var(--gray-500);
+    }
 
     /* ===== Book Detail ===== */
-    .book-detail { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
-    .book-detail-images { display: flex; flex-direction: column; gap: .75rem; }
-    .book-detail-main-img { width: 100%; height: 360px; background: linear-gradient(135deg, var(--gray-100), var(--gray-50)); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid var(--gray-100); }
-    .book-detail-main-img img { width: 100%; height: 100%; object-fit: contain; transition: opacity .3s; }
-    .book-detail-main-img .no-img { font-size: 5rem; color: var(--gray-200); }
-    .book-detail-thumbs { display: flex; gap: .5rem; overflow-x: auto; }
-    .book-detail-thumbs img { width: 64px; height: 64px; object-fit: cover; border-radius: var(--radius-sm); cursor: pointer; border: 2px solid transparent; transition: border-color .15s; }
-    .book-detail-thumbs img.active { border-color: var(--primary); }
-    .book-detail-info h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: .5rem; line-height: 1.3; }
-    .book-detail-info .price-lg { font-size: 1.75rem; font-weight: 700; color: var(--danger); margin-bottom: .75rem; }
-    .book-detail-info .price-lg::before { content: '¥'; font-size: 1.1rem; }
-    .book-detail-info .info-row { display: flex; gap: 1rem; margin-bottom: .4rem; font-size: .875rem; color: var(--gray-600); }
-    .book-detail-info .info-row strong { min-width: 80px; color: var(--gray-700); font-weight: 600; }
-    .book-detail-info .desc { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--gray-100); }
-    .book-detail-info .desc p { font-size: .9rem; color: var(--gray-600); line-height: 1.7; white-space: pre-wrap; }
-    .book-detail-actions { margin-top: 1.5rem; display: flex; gap: .75rem; flex-wrap: wrap; }
+    .book-detail {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    .book-detail-images {
+      display: flex;
+      flex-direction: column;
+      gap: .75rem;
+    }
+
+    .book-detail-main-img {
+      width: 100%;
+      height: 360px;
+      background: linear-gradient(135deg, var(--gray-100), var(--gray-50));
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border: 1px solid var(--gray-100);
+    }
+
+    .book-detail-main-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      transition: opacity .3s;
+    }
+
+    .book-detail-main-img .no-img {
+      font-size: 5rem;
+      color: var(--gray-200);
+    }
+
+    .book-detail-thumbs {
+      display: flex;
+      gap: .5rem;
+      overflow-x: auto;
+    }
+
+    .book-detail-thumbs img {
+      width: 64px;
+      height: 64px;
+      object-fit: cover;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: border-color .15s;
+    }
+
+    .book-detail-thumbs img.active {
+      border-color: var(--primary);
+    }
+
+    .book-detail-info h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: .5rem;
+      line-height: 1.3;
+    }
+
+    .book-detail-info .price-lg {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--danger);
+      margin-bottom: .75rem;
+    }
+
+    .book-detail-info .price-lg::before {
+      content: '¥';
+      font-size: 1.1rem;
+    }
+
+    .book-detail-info .info-row {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: .4rem;
+      font-size: .875rem;
+      color: var(--gray-600);
+    }
+
+    .book-detail-info .info-row strong {
+      min-width: 80px;
+      color: var(--gray-700);
+      font-weight: 600;
+    }
+
+    .book-detail-info .desc {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--gray-100);
+    }
+
+    .book-detail-info .desc p {
+      font-size: .9rem;
+      color: var(--gray-600);
+      line-height: 1.7;
+      white-space: pre-wrap;
+    }
+
+    .book-detail-actions {
+      margin-top: 1.5rem;
+      display: flex;
+      gap: .75rem;
+      flex-wrap: wrap;
+    }
 
     /* ===== Banners ===== */
-    .banner { position: relative; width: 100%; height: 300px; border-radius: var(--radius); overflow: hidden; margin-bottom: 2rem; }
-    .banner-slide { position: absolute; inset: 0; opacity: 0; transition: opacity .6s ease; }
-    .banner-slide.active { opacity: 1; }
-    .banner-slide .banner-inner { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: .5rem; }
-    .banner-slide .banner-inner .banner-icon { font-size: 3.5rem; margin-bottom: .25rem; }
-    .banner-slide .banner-inner h2 { color: #fff; font-size: 1.75rem; font-weight: 800; text-shadow: 0 2px 8px rgba(0,0,0,.15); }
-    .banner-slide .banner-inner p { color: rgba(255,255,255,.85); font-size: 1rem; text-shadow: 0 1px 4px rgba(0,0,0,.1); }
-    .banner-slide .banner-inner .banner-stat { display: flex; gap: 2rem; margin-top: .5rem; }
-    .banner-slide .banner-inner .banner-stat span { color: rgba(255,255,255,.9); font-size: .9rem; background: rgba(255,255,255,.15); padding: .25rem .85rem; border-radius: 999px; backdrop-filter: blur(4px); }
-    .banner-slide .banner-inner .banner-stat span strong { font-weight: 700; }
-    .banner-dots { position: absolute; bottom: 1rem; right: 1.5rem; display: flex; gap: .5rem; z-index: 5; }
-    .banner-dots button { width: 10px; height: 10px; border-radius: 50%; border: 2px solid rgba(255,255,255,.6); background: transparent; cursor: pointer; transition: all .2s; }
-    .banner-dots button.active { background: #fff; border-color: #fff; transform: scale(1.2); }
+    .banner {
+      position: relative;
+      width: 100%;
+      height: 300px;
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 2rem;
+    }
+
+    .banner-slide {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity .6s ease;
+    }
+
+    .banner-slide.active {
+      opacity: 1;
+    }
+
+    .banner-slide .banner-inner {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: .5rem;
+    }
+
+    .banner-slide .banner-inner .banner-icon {
+      font-size: 3.5rem;
+      margin-bottom: .25rem;
+    }
+
+    .banner-slide .banner-inner h2 {
+      color: #fff;
+      font-size: 1.75rem;
+      font-weight: 800;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, .15);
+    }
+
+    .banner-slide .banner-inner p {
+      color: rgba(255, 255, 255, .85);
+      font-size: 1rem;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, .1);
+    }
+
+    .banner-slide .banner-inner .banner-stat {
+      display: flex;
+      gap: 2rem;
+      margin-top: .5rem;
+    }
+
+    .banner-slide .banner-inner .banner-stat span {
+      color: rgba(255, 255, 255, .9);
+      font-size: .9rem;
+      background: rgba(255, 255, 255, .15);
+      padding: .25rem .85rem;
+      border-radius: 999px;
+      backdrop-filter: blur(4px);
+    }
+
+    .banner-slide .banner-inner .banner-stat span strong {
+      font-weight: 700;
+    }
+
+    .banner-dots {
+      position: absolute;
+      bottom: 1rem;
+      right: 1.5rem;
+      display: flex;
+      gap: .5rem;
+      z-index: 5;
+    }
+
+    .banner-dots button {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, .6);
+      background: transparent;
+      cursor: pointer;
+      transition: all .2s;
+    }
+
+    .banner-dots button.active {
+      background: #fff;
+      border-color: #fff;
+      transform: scale(1.2);
+    }
 
     /* ===== Filters ===== */
-    .filters { display: flex; gap: .75rem; flex-wrap: wrap; align-items: end; margin-bottom: 1.5rem; padding: 1rem 1.25rem; background: #fff; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid rgba(229,231,235,.5); }
-    .filter-group { display: flex; flex-direction: column; gap: .25rem; }
-    .filter-group label { font-size: .72rem; font-weight: 600; color: var(--gray-400); letter-spacing: .01em; }
-    .filter-group select, .filter-group input { padding: .4rem .55rem; border: 1.5px solid var(--gray-200); border-radius: var(--radius-sm); font-size: .85rem; min-width: 100px; background: #fff; transition: border-color .15s; }
-    .filter-group select:focus, .filter-group input:focus { outline: none; border-color: var(--primary); }
+    .filters {
+      display: flex;
+      gap: .75rem;
+      flex-wrap: wrap;
+      align-items: end;
+      margin-bottom: 1.5rem;
+      padding: 1rem 1.25rem;
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(229, 231, 235, .5);
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: .25rem;
+    }
+
+    .filter-group label {
+      font-size: .72rem;
+      font-weight: 600;
+      color: var(--gray-400);
+      letter-spacing: .01em;
+    }
+
+    .filter-group select,
+    .filter-group input {
+      padding: .4rem .55rem;
+      border: 1.5px solid var(--gray-200);
+      border-radius: var(--radius-sm);
+      font-size: .85rem;
+      min-width: 100px;
+      background: #fff;
+      transition: border-color .15s;
+    }
+
+    .filter-group select:focus,
+    .filter-group input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
 
     /* ===== Categories ===== */
-    .categories { display: flex; gap: .5rem; overflow-x: auto; padding-bottom: .5rem; margin-bottom: 1.5rem; }
-    .category-chip { padding: .4rem 1rem; border-radius: 999px; border: 1.5px solid var(--gray-200); background: #fff; cursor: pointer; font-size: .85rem; color: var(--gray-600); white-space: nowrap; transition: all .2s; font-weight: 500; }
-    .category-chip:hover { border-color: var(--primary-light); color: var(--primary); background: rgba(79,70,229,.04); }
-    .category-chip.active { background: var(--primary-gradient); color: #fff; border-color: transparent; box-shadow: 0 2px 6px rgba(79,70,229,.25); }
+    .categories {
+      display: flex;
+      gap: .5rem;
+      overflow-x: auto;
+      padding-bottom: .5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .category-chip {
+      padding: .4rem 1rem;
+      border-radius: 999px;
+      border: 1.5px solid var(--gray-200);
+      background: #fff;
+      cursor: pointer;
+      font-size: .85rem;
+      color: var(--gray-600);
+      white-space: nowrap;
+      transition: all .2s;
+      font-weight: 500;
+    }
+
+    .category-chip:hover {
+      border-color: var(--primary-light);
+      color: var(--primary);
+      background: rgba(79, 70, 229, .04);
+    }
+
+    .category-chip.active {
+      background: var(--primary-gradient);
+      color: #fff;
+      border-color: transparent;
+      box-shadow: 0 2px 6px rgba(79, 70, 229, .25);
+    }
 
     /* ===== Table ===== */
-    .table-wrap { overflow-x: auto; border-radius: var(--radius-sm); border: 1px solid var(--gray-100); }
-    table { width: 100%; border-collapse: collapse; font-size: .875rem; }
-    th, td { padding: .7rem .9rem; text-align: left; border-bottom: 1px solid var(--gray-100); }
-    th { font-weight: 600; color: var(--gray-500); font-size: .78rem; text-transform: uppercase; letter-spacing: .04em; background: var(--gray-50); }
-    tr:last-child td { border-bottom: none; }
-    tr:hover td { background: rgba(79,70,229,.02); }
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--gray-100);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .875rem;
+    }
+
+    th,
+    td {
+      padding: .7rem .9rem;
+      text-align: left;
+      border-bottom: 1px solid var(--gray-100);
+    }
+
+    th {
+      font-weight: 600;
+      color: var(--gray-500);
+      font-size: .78rem;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      background: var(--gray-50);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: rgba(79, 70, 229, .02);
+    }
 
     /* ===== Status Badges ===== */
-    .badge { display: inline-block; padding: .15rem .55rem; border-radius: 999px; font-size: .72rem; font-weight: 600; }
-    .badge-success { background: var(--success-bg); color: #065f46; }
-    .badge-warning { background: var(--warning-bg); color: #92400e; }
-    .badge-danger { background: var(--danger-bg); color: #991b1b; }
-    .badge-info { background: #dbeafe; color: #1e40af; }
-    .badge-gray { background: var(--gray-100); color: var(--gray-600); }
+    .badge {
+      display: inline-block;
+      padding: .15rem .55rem;
+      border-radius: 999px;
+      font-size: .72rem;
+      font-weight: 600;
+    }
+
+    .badge-success {
+      background: var(--success-bg);
+      color: #065f46;
+    }
+
+    .badge-warning {
+      background: var(--warning-bg);
+      color: #92400e;
+    }
+
+    .badge-danger {
+      background: var(--danger-bg);
+      color: #991b1b;
+    }
+
+    .badge-info {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .badge-gray {
+      background: var(--gray-100);
+      color: var(--gray-600);
+    }
 
     /* ===== Pagination ===== */
-    .pagination { display: flex; justify-content: center; gap: .375rem; margin-top: 1.5rem; }
-    .pagination button { padding: .4rem .75rem; border: 1.5px solid var(--gray-200); background: #fff; border-radius: var(--radius-sm); cursor: pointer; font-size: .85rem; min-width: 36px; transition: all .15s; font-weight: 500; }
-    .pagination button:hover { border-color: var(--primary); color: var(--primary); }
-    .pagination button.active { background: var(--primary-gradient); color: #fff; border-color: transparent; }
-    .pagination button:disabled { opacity: .4; cursor: default; border-color: var(--gray-100); }
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: .375rem;
+      margin-top: 1.5rem;
+    }
+
+    .pagination button {
+      padding: .4rem .75rem;
+      border: 1.5px solid var(--gray-200);
+      background: #fff;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: .85rem;
+      min-width: 36px;
+      transition: all .15s;
+      font-weight: 500;
+    }
+
+    .pagination button:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .pagination button.active {
+      background: var(--primary-gradient);
+      color: #fff;
+      border-color: transparent;
+    }
+
+    .pagination button:disabled {
+      opacity: .4;
+      cursor: default;
+      border-color: var(--gray-100);
+    }
 
     /* ===== Messages / Chat ===== */
-    .chat-container { display: grid; grid-template-columns: 300px 1fr; gap: 0; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); background: #fff; min-height: 500px; border: 1px solid var(--gray-100); }
-    .chat-sidebar { border-right: 1px solid var(--gray-100); overflow-y: auto; max-height: 600px; }
-    .chat-sidebar-item { padding: .75rem 1rem; cursor: pointer; border-bottom: 1px solid var(--gray-50); transition: background .15s; }
-    .chat-sidebar-item:hover, .chat-sidebar-item.active { background: rgba(79,70,229,.04); }
-    .chat-sidebar-item .name { font-weight: 600; font-size: .875rem; color: var(--gray-700); }
-    .chat-sidebar-item .prev { font-size: .8rem; color: var(--gray-400); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .chat-sidebar-item .time { font-size: .7rem; color: var(--gray-400); float: right; margin-top: 2px; }
-    .chat-main { display: flex; flex-direction: column; max-height: 600px; }
-    .chat-header { padding: .75rem 1rem; border-bottom: 1px solid var(--gray-100); font-weight: 600; color: var(--gray-700); background: var(--gray-50); }
-    .chat-messages { flex: 1; overflow-y: auto; padding: 1rem; display: flex; flex-direction: column; gap: .5rem; background: var(--gray-50); }
-    .chat-msg { max-width: 72%; padding: .6rem .9rem; border-radius: 14px; font-size: .875rem; line-height: 1.45; box-shadow: 0 1px 2px rgba(0,0,0,.04); }
-    .chat-msg.sent { align-self: flex-end; background: var(--primary-gradient); color: #fff; border-bottom-right-radius: 4px; }
-    .chat-msg.received { align-self: flex-start; background: #fff; color: var(--gray-700); border-bottom-left-radius: 4px; }
-    .chat-msg .time { font-size: .65rem; opacity: .6; margin-top: .3rem; display: block; }
-    .chat-input { display: flex; padding: .75rem 1rem; border-top: 1px solid var(--gray-100); gap: .5rem; background: #fff; }
-    .chat-input input { flex: 1; border: 1.5px solid var(--gray-200); border-radius: 999px; padding: .5rem 1rem; font-size: .875rem; transition: border-color .15s; }
-    .chat-input input:focus { outline: none; border-color: var(--primary); }
-    .chat-input button { width: 38px; height: 38px; border-radius: 50%; border: none; background: var(--primary-gradient); color: #fff; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; transition: all .2s; }
-    .chat-input button:hover { transform: scale(1.05); box-shadow: 0 2px 8px rgba(79,70,229,.3); }
+    .chat-container {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 0;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      background: #fff;
+      min-height: 500px;
+      border: 1px solid var(--gray-100);
+    }
+
+    .chat-sidebar {
+      border-right: 1px solid var(--gray-100);
+      overflow-y: auto;
+      max-height: 600px;
+    }
+
+    .chat-sidebar-item {
+      padding: .75rem 1rem;
+      cursor: pointer;
+      border-bottom: 1px solid var(--gray-50);
+      transition: background .15s;
+    }
+
+    .chat-sidebar-item:hover,
+    .chat-sidebar-item.active {
+      background: rgba(79, 70, 229, .04);
+    }
+
+    .chat-sidebar-item .name {
+      font-weight: 600;
+      font-size: .875rem;
+      color: var(--gray-700);
+    }
+
+    .chat-sidebar-item .prev {
+      font-size: .8rem;
+      color: var(--gray-400);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .chat-sidebar-item .time {
+      font-size: .7rem;
+      color: var(--gray-400);
+      float: right;
+      margin-top: 2px;
+    }
+
+    .chat-main {
+      display: flex;
+      flex-direction: column;
+      max-height: 600px;
+    }
+
+    .chat-header {
+      padding: .75rem 1rem;
+      border-bottom: 1px solid var(--gray-100);
+      font-weight: 600;
+      color: var(--gray-700);
+      background: var(--gray-50);
+    }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: .5rem;
+      background: var(--gray-50);
+    }
+
+    .chat-msg {
+      max-width: 72%;
+      padding: .6rem .9rem;
+      border-radius: 14px;
+      font-size: .875rem;
+      line-height: 1.45;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, .04);
+    }
+
+    .chat-msg.sent {
+      align-self: flex-end;
+      background: var(--primary-gradient);
+      color: #fff;
+      border-bottom-right-radius: 4px;
+    }
+
+    .chat-msg.received {
+      align-self: flex-start;
+      background: #fff;
+      color: var(--gray-700);
+      border-bottom-left-radius: 4px;
+    }
+
+    .chat-msg .time {
+      font-size: .65rem;
+      opacity: .6;
+      margin-top: .3rem;
+      display: block;
+    }
+
+    .chat-input {
+      display: flex;
+      padding: .75rem 1rem;
+      border-top: 1px solid var(--gray-100);
+      gap: .5rem;
+      background: #fff;
+    }
+
+    .chat-input input {
+      flex: 1;
+      border: 1.5px solid var(--gray-200);
+      border-radius: 999px;
+      padding: .5rem 1rem;
+      font-size: .875rem;
+      transition: border-color .15s;
+    }
+
+    .chat-input input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .chat-input button {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: none;
+      background: var(--primary-gradient);
+      color: #fff;
+      cursor: pointer;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .2s;
+    }
+
+    .chat-input button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 2px 8px rgba(79, 70, 229, .3);
+    }
 
     /* ===== Modal ===== */
-    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(15,23,42,.5); backdrop-filter: blur(4px); z-index: 200; justify-content: center; align-items: center; }
-    .modal-overlay.open { display: flex; }
-    .modal { background: #fff; border-radius: var(--radius); padding: 1.75rem; width: 90%; max-width: 540px; max-height: 80vh; overflow-y: auto; box-shadow: var(--shadow-xl); animation: modalIn .25s ease; }
-    @keyframes modalIn { from { opacity: 0; transform: scale(.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
-    .modal h3 { font-size: 1.125rem; margin-bottom: 1rem; color: var(--gray-800); }
-    .modal-actions { display: flex; gap: .5rem; justify-content: flex-end; margin-top: 1.5rem; }
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, .5);
+      backdrop-filter: blur(4px);
+      z-index: 200;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal {
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      width: 90%;
+      max-width: 540px;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-xl);
+      animation: modalIn .25s ease;
+    }
+
+    @keyframes modalIn {
+      from {
+        opacity: 0;
+        transform: scale(.95) translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    .modal h3 {
+      font-size: 1.125rem;
+      margin-bottom: 1rem;
+      color: var(--gray-800);
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: .5rem;
+      justify-content: flex-end;
+      margin-top: 1.5rem;
+    }
 
     /* ===== Loading & Toast ===== */
-    .loading { text-align: center; padding: 2rem; color: var(--gray-400); }
-    .spinner { display: inline-block; width: 28px; height: 28px; border: 3px solid var(--gray-200); border-top-color: var(--primary); border-radius: 50%; animation: spin .7s linear infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .toast { position: fixed; top: 1.25rem; right: 1.25rem; z-index: 300; padding: .75rem 1.25rem; border-radius: var(--radius-sm); color: #fff; font-weight: 600; font-size: .875rem; box-shadow: var(--shadow-lg); transform: translateX(calc(100% + 2rem)); transition: transform .35s cubic-bezier(.22,1,.36,1); display: flex; align-items: center; gap: .5rem; }
-    .toast.show { transform: translateX(0); }
-    .toast-success { background: var(--success); }
-    .toast-error { background: var(--danger); }
-    .toast-info { background: var(--primary-gradient); }
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      color: var(--gray-400);
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 28px;
+      height: 28px;
+      border: 3px solid var(--gray-200);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .toast {
+      position: fixed;
+      top: 1.25rem;
+      right: 1.25rem;
+      z-index: 300;
+      padding: .75rem 1.25rem;
+      border-radius: var(--radius-sm);
+      color: #fff;
+      font-weight: 600;
+      font-size: .875rem;
+      box-shadow: var(--shadow-lg);
+      transform: translateX(calc(100% + 2rem));
+      transition: transform .35s cubic-bezier(.22, 1, .36, 1);
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+
+    .toast.show {
+      transform: translateX(0);
+    }
+
+    .toast-success {
+      background: var(--success);
+    }
+
+    .toast-error {
+      background: var(--danger);
+    }
+
+    .toast-info {
+      background: var(--primary-gradient);
+    }
 
     /* ===== Empty State ===== */
-    .empty { text-align: center; padding: 3rem 1rem; color: var(--gray-400); }
-    .empty .icon { font-size: 3rem; margin-bottom: .5rem; }
-    .empty p { font-size: .9rem; }
+    .empty {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--gray-400);
+    }
+
+    .empty .icon {
+      font-size: 3rem;
+      margin-bottom: .5rem;
+    }
+
+    .empty p {
+      font-size: .9rem;
+    }
 
     /* ===== Stats ===== */
-    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
-    .stat-card { background: #fff; border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.5rem .75rem; text-align: center; border: 1px solid rgba(229,231,235,.4); }
-    .stat-card .num { font-size: 2rem; font-weight: 800; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-    .stat-card .label { font-size: .8rem; color: var(--gray-500); margin-top: .25rem; font-weight: 500; }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1.5rem .75rem;
+      text-align: center;
+      border: 1px solid rgba(229, 231, 235, .4);
+    }
+
+    .stat-card .num {
+      font-size: 2rem;
+      font-weight: 800;
+      background: var(--primary-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .stat-card .label {
+      font-size: .8rem;
+      color: var(--gray-500);
+      margin-top: .25rem;
+      font-weight: 500;
+    }
 
     /* ===== Footer ===== */
-    .footer { background: #fff; border-top: 1px solid var(--gray-100); margin-top: 3rem; padding: 2rem 1.5rem; }
-    .footer-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
-    .footer .footer-brand { font-weight: 700; font-size: 1rem; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-    .footer p { font-size: .8rem; color: var(--gray-400); }
-    .footer .footer-dev { display: flex; align-items: center; gap: .5rem; }
-    .footer .footer-dev .dev-tag { display: inline-block; padding: .15rem .6rem; background: var(--gray-100); border-radius: 999px; font-size: .72rem; color: var(--gray-500); font-weight: 500; }
+    .footer {
+      background: #fff;
+      border-top: 1px solid var(--gray-100);
+      margin-top: 3rem;
+      padding: 2rem 1.5rem;
+    }
+
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer .footer-brand {
+      font-weight: 700;
+      font-size: 1rem;
+      background: var(--primary-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .footer p {
+      font-size: .8rem;
+      color: var(--gray-400);
+    }
+
+    .footer .footer-dev {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+
+    .footer .footer-dev .dev-tag {
+      display: inline-block;
+      padding: .15rem .6rem;
+      background: var(--gray-100);
+      border-radius: 999px;
+      font-size: .72rem;
+      color: var(--gray-500);
+      font-weight: 500;
+    }
 
     /* ===== Home feature highlight ===== */
-    .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: -1rem 0 1.5rem; }
-    .feature-item { display: flex; align-items: center; gap: .75rem; padding: .75rem 1rem; background: #fff; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid rgba(229,231,235,.4); }
-    .feature-item .fi-icon { font-size: 1.5rem; }
-    .feature-item .fi-text { font-size: .82rem; color: var(--gray-600); font-weight: 500; }
-    .feature-item .fi-text strong { color: var(--gray-800); }
+    .features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin: -1rem 0 1.5rem;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      padding: .75rem 1rem;
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(229, 231, 235, .4);
+    }
+
+    .feature-item .fi-icon {
+      font-size: 1.5rem;
+    }
+
+    .feature-item .fi-text {
+      font-size: .82rem;
+      color: var(--gray-600);
+      font-weight: 500;
+    }
+
+    .feature-item .fi-text strong {
+      color: var(--gray-800);
+    }
 
     /* ===== Section title ===== */
-    .section-title { font-size: 1.1rem; font-weight: 700; color: var(--gray-800); margin-bottom: 1rem; display: flex; align-items: center; gap: .5rem; }
-    .section-title::before { content: ''; display: inline-block; width: 3px; height: 18px; background: var(--primary-gradient); border-radius: 2px; }
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--gray-800);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+
+    .section-title::before {
+      content: '';
+      display: inline-block;
+      width: 3px;
+      height: 18px;
+      background: var(--primary-gradient);
+      border-radius: 2px;
+    }
 
     /* ===== Responsive ===== */
     @media (max-width: 768px) {
-      .navbar-inner { flex-wrap: wrap; height: auto; padding: .5rem 0; }
-      .nav-links { order: 3; width: 100%; overflow-x: auto; }
-      .book-detail { grid-template-columns: 1fr; }
-      .chat-container { grid-template-columns: 1fr; }
-      .chat-sidebar { display: none; }
-      .form-row { grid-template-columns: 1fr; }
-      .book-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
-      .banner { height: 200px; }
-      .main-content { padding: 1rem; }
-      .features { grid-template-columns: 1fr 1fr; }
-      .footer-inner { flex-direction: column; text-align: center; }
-      .features { grid-template-columns: 1fr; }
+      .navbar-inner {
+        flex-wrap: wrap;
+        height: auto;
+        padding: .5rem 0;
+      }
+
+      .nav-links {
+        order: 3;
+        width: 100%;
+        overflow-x: auto;
+      }
+
+      .book-detail {
+        grid-template-columns: 1fr;
+      }
+
+      .chat-container {
+        grid-template-columns: 1fr;
+      }
+
+      .chat-sidebar {
+        display: none;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .book-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      }
+
+      .banner {
+        height: 200px;
+      }
+
+      .main-content {
+        padding: 1rem;
+      }
+
+      .features {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .footer-inner {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .features {
+        grid-template-columns: 1fr;
+      }
     }
 
     /* ===== Misc ===== */
-    .text-center { text-align: center; }
-    .text-right { text-align: right; }
-    .mt-1 { margin-top: .5rem; }
-    .mt-2 { margin-top: 1rem; }
-    .mb-1 { margin-bottom: .5rem; }
-    .mb-2 { margin-bottom: 1rem; }
-    .flex { display: flex; }
-    .flex-1 { flex: 1; }
-    .gap-1 { gap: .5rem; }
-    .gap-2 { gap: 1rem; }
-    .items-center { align-items: center; }
-    .justify-between { justify-content: space-between; }
-    .truncate { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    blockquote { border-left: 3px solid var(--gray-200); padding-left: 1rem; color: var(--gray-500); margin: .5rem 0; font-style: italic; }
+    .text-center {
+      text-align: center;
+    }
+
+    .text-right {
+      text-align: right;
+    }
+
+    .mt-1 {
+      margin-top: .5rem;
+    }
+
+    .mt-2 {
+      margin-top: 1rem;
+    }
+
+    .mb-1 {
+      margin-bottom: .5rem;
+    }
+
+    .mb-2 {
+      margin-bottom: 1rem;
+    }
+
+    .flex {
+      display: flex;
+    }
+
+    .flex-1 {
+      flex: 1;
+    }
+
+    .gap-1 {
+      gap: .5rem;
+    }
+
+    .gap-2 {
+      gap: 1rem;
+    }
+
+    .items-center {
+      align-items: center;
+    }
+
+    .justify-between {
+      justify-content: space-between;
+    }
+
+    .truncate {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    blockquote {
+      border-left: 3px solid var(--gray-200);
+      padding-left: 1rem;
+      color: var(--gray-500);
+      margin: .5rem 0;
+      font-style: italic;
+    }
 
     /* Avatar */
-    .avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--primary-gradient); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1rem; }
-    .avatar-sm { width: 32px; height: 32px; font-size: .8rem; }
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--primary-gradient);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    .avatar-sm {
+      width: 32px;
+      height: 32px;
+      font-size: .8rem;
+    }
 
     /* Glow effect for modals */
-    .modal h3::after { content: ''; display: block; width: 32px; height: 3px; background: var(--primary-gradient); border-radius: 2px; margin-top: .35rem; }
+    .modal h3::after {
+      content: '';
+      display: block;
+      width: 32px;
+      height: 3px;
+      background: var(--primary-gradient);
+      border-radius: 2px;
+      margin-top: .35rem;
+    }
   </style>
 </head>
+
 <body>
-<div id="app">
-  <!-- Navbar -->
-  <nav class="navbar" id="navbar">
-    <div class="navbar-inner">
-      <div class="logo" onclick="showPage('home')">XATU<span>书市</span></div>
-      <div class="nav-links" id="navLinks">
-        <a onclick="showPage('home')" data-page="home" class="active">首页</a>
-        <a onclick="showPage('mybooks')" data-page="mybooks">我的图书</a>
-        <a onclick="showPage('favorites')" data-page="favorites">收藏</a>
-        <a onclick="showPage('orders')" data-page="orders">订单</a>
-        <a onclick="showPage('sales')" data-page="sales">售出</a>
-        <a onclick="showPage('messages')" data-page="messages">消息</a>
-        <a onclick="showPage('profile')" data-page="profile">个人</a>
-        <a onclick="showPage('admin')" data-page="admin" id="adminNavLink" style="display:none">管理</a>
-      </div>
-      <div class="navbar-right" id="navbarRight">
-        <div class="user-info" id="userInfo" style="display:none">
-          <span id="userNameDisplay"></span>
+  <div id="app">
+    <!-- Navbar -->
+    <nav class="navbar" id="navbar">
+      <div class="navbar-inner">
+        <div class="logo" onclick="showPage('home')">XATU<span>书市</span></div>
+        <div class="nav-links" id="navLinks">
+          <a onclick="showPage('home')" data-page="home" class="active">首页</a>
+          <a onclick="showPage('mybooks')" data-page="mybooks">我的图书</a>
+          <a onclick="showPage('favorites')" data-page="favorites">收藏</a>
+          <a onclick="showPage('orders')" data-page="orders">订单</a>
+          <a onclick="showPage('sales')" data-page="sales">售出</a>
+          <a onclick="showPage('messages')" data-page="messages">消息</a>
+          <a onclick="showPage('profile')" data-page="profile">个人</a>
+          <a onclick="showPage('admin')" data-page="admin" id="adminNavLink" style="display:none">管理</a>
         </div>
-        <div class="nav-auth" id="navAuth">
-          <a onclick="showPage('login')">登录 / 注册</a>
+        <div class="navbar-right" id="navbarRight">
+          <div class="user-info" id="userInfo" style="display:none">
+            <span id="userNameDisplay"></span>
+          </div>
+          <div class="nav-auth" id="navAuth">
+            <a onclick="showPage('login')">登录 / 注册</a>
+          </div>
+          <button class="btn-logout" id="logoutBtn" style="display:none" onclick="logout()">退出</button>
         </div>
-        <button class="btn-logout" id="logoutBtn" style="display:none" onclick="logout()">退出</button>
       </div>
-    </div>
-  </nav>
+    </nav>
 
-  <!-- Main -->
-  <main class="main-content">
+    <!-- Main -->
+    <main class="main-content">
 
-    <!-- ===== Login / Register ===== -->
-    <div class="page active" id="page-login">
-      <div class="auth-page">
-        <div class="auth-card">
-          <div class="card">
-            <div class="auth-tabs">
-              <button class="active" onclick="switchAuthTab('login')">登录</button>
-              <button onclick="switchAuthTab('register')">注册</button>
-            </div>
-            <div id="authLogin">
-              <div class="form-group">
-                <label>手机号</label>
-                <input class="form-control" id="loginPhone" placeholder="请输入手机号" />
+      <!-- ===== Login / Register ===== -->
+      <div class="page active" id="page-login">
+        <div class="auth-page">
+          <div class="auth-card">
+            <div class="card">
+              <div class="auth-tabs">
+                <button class="active" onclick="switchAuthTab('login')">登录</button>
+                <button onclick="switchAuthTab('register')">注册</button>
               </div>
-              <div class="form-group">
-                <label>密码</label>
-                <input class="form-control" type="password" id="loginPassword" placeholder="请输入密码" @keyup.enter="login()" />
+              <div id="authLogin">
+                <div class="form-group">
+                  <label>手机号</label>
+                  <input class="form-control" id="loginPhone" placeholder="请输入手机号" />
+                </div>
+                <div class="form-group">
+                  <label>密码</label>
+                  <input class="form-control" type="password" id="loginPassword" placeholder="请输入密码"
+                    @keyup.enter="login()" />
+                </div>
+                <button class="btn btn-primary" style="width:100%" onclick="login()">登 录</button>
               </div>
-              <button class="btn btn-primary" style="width:100%" onclick="login()">登 录</button>
-            </div>
-            <div id="authRegister" style="display:none">
-              <div class="form-group">
-                <label>手机号</label>
-                <input class="form-control" id="regPhone" placeholder="请输入手机号" />
+              <div id="authRegister" style="display:none">
+                <div class="form-group">
+                  <label>手机号</label>
+                  <input class="form-control" id="regPhone" placeholder="请输入手机号" />
+                </div>
+                <div class="form-group">
+                  <label>昵称</label>
+                  <input class="form-control" id="regNickname" placeholder="请输入昵称" />
+                </div>
+                <div class="form-group">
+                  <label>密码</label>
+                  <input class="form-control" type="password" id="regPassword" placeholder="6-32位密码" />
+                </div>
+                <div class="form-group">
+                  <label>专业</label>
+                  <input class="form-control" id="regMajor" placeholder="选填" />
+                </div>
+                <div class="form-group">
+                  <label>微信号</label>
+                  <input class="form-control" id="regWechat" placeholder="选填" />
+                </div>
+                <button class="btn btn-primary" style="width:100%" onclick="register()">注 册</button>
               </div>
-              <div class="form-group">
-                <label>昵称</label>
-                <input class="form-control" id="regNickname" placeholder="请输入昵称" />
-              </div>
-              <div class="form-group">
-                <label>密码</label>
-                <input class="form-control" type="password" id="regPassword" placeholder="6-32位密码" />
-              </div>
-              <div class="form-group">
-                <label>专业</label>
-                <input class="form-control" id="regMajor" placeholder="选填" />
-              </div>
-              <div class="form-group">
-                <label>微信号</label>
-                <input class="form-control" id="regWechat" placeholder="选填" />
-              </div>
-              <button class="btn btn-primary" style="width:100%" onclick="register()">注 册</button>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- ===== Home ===== -->
-    <div class="page" id="page-home">
-      <!-- Banners -->
-      <div class="banner" id="bannerContainer">
-        <div class="loading" style="height:300px;display:flex;align-items:center;justify-content:center"><div class="spinner"></div></div>
+      <!-- ===== Home ===== -->
+      <div class="page" id="page-home">
+        <!-- Banners -->
+        <div class="banner" id="bannerContainer">
+          <div class="loading" style="height:300px;display:flex;align-items:center;justify-content:center">
+            <div class="spinner"></div>
+          </div>
+        </div>
+
+        <!-- Features -->
+        <div class="features" id="featuresContainer">
+          <div class="feature-item"><span class="fi-icon">📖</span><span class="fi-text"><strong>图书在售</strong> <span
+                id="featureBookCount">-</span></span></div>
+          <div class="feature-item"><span class="fi-icon">👥</span><span class="fi-text"><strong>注册用户</strong> <span
+                id="featureUserCount">-</span></span></div>
+          <div class="feature-item"><span class="fi-icon">✅</span><span class="fi-text"><strong>总订单</strong> <span
+                id="featureDoneCount">-</span></span></div>
+        </div>
+
+        <!-- Categories -->
+        <div class="categories" id="categoryChips"></div>
+
+        <!-- Filters -->
+        <div class="filters" id="bookFilters">
+          <div class="filter-group">
+            <label>排序</label>
+            <select id="sortSelect" onchange="loadBooks()">
+              <option value="created_at">最新</option>
+              <option value="price">价格</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label>顺序</label>
+            <select id="orderSelect" onchange="loadBooks()">
+              <option value="DESC">降序</option>
+              <option value="ASC">升序</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label>最低价</label>
+            <input type="number" id="minPrice" placeholder="¥" onchange="loadBooks()" />
+          </div>
+          <div class="filter-group">
+            <label>最高价</label>
+            <input type="number" id="maxPrice" placeholder="¥" onchange="loadBooks()" />
+          </div>
+          <div class="filter-group">
+            <label>新旧程度</label>
+            <select id="conditionFilter" onchange="loadBooks()">
+              <option value="0">不限</option>
+              <option value="8">9成新以上</option>
+              <option value="6">7成新以上</option>
+              <option value="4">5成新以上</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label>搜索</label>
+            <input type="text" id="searchKeyword" placeholder="书名/作者" onchange="loadBooks()" />
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="loadBooks()" style="margin-bottom:2px">搜索</button>
+        </div>
+
+        <!-- Section: 在售图书 -->
+        <div class="section-title">在售图书</div>
+        <div id="bookList">
+          <div class="loading">
+            <div class="spinner"></div>
+          </div>
+        </div>
+        <div class="pagination" id="bookPagination"></div>
       </div>
 
-      <!-- Features -->
-      <div class="features" id="featuresContainer">
-        <div class="feature-item"><span class="fi-icon">📖</span><span class="fi-text"><strong>图书在售</strong> <span id="featureBookCount">-</span></span></div>
-        <div class="feature-item"><span class="fi-icon">👥</span><span class="fi-text"><strong>注册用户</strong> <span id="featureUserCount">-</span></span></div>
-        <div class="feature-item"><span class="fi-icon">✅</span><span class="fi-text"><strong>总订单</strong> <span id="featureDoneCount">-</span></span></div>
-      </div>
-
-      <!-- Categories -->
-      <div class="categories" id="categoryChips"></div>
-
-      <!-- Filters -->
-      <div class="filters" id="bookFilters">
-        <div class="filter-group">
-          <label>排序</label>
-          <select id="sortSelect" onchange="loadBooks()">
-            <option value="created_at">最新</option>
-            <option value="price">价格</option>
-          </select>
-        </div>
-        <div class="filter-group">
-          <label>顺序</label>
-          <select id="orderSelect" onchange="loadBooks()">
-            <option value="DESC">降序</option>
-            <option value="ASC">升序</option>
-          </select>
-        </div>
-        <div class="filter-group">
-          <label>最低价</label>
-          <input type="number" id="minPrice" placeholder="¥" onchange="loadBooks()" />
-        </div>
-        <div class="filter-group">
-          <label>最高价</label>
-          <input type="number" id="maxPrice" placeholder="¥" onchange="loadBooks()" />
-        </div>
-        <div class="filter-group">
-          <label>新旧程度</label>
-          <select id="conditionFilter" onchange="loadBooks()">
-            <option value="0">不限</option>
-            <option value="8">9成新以上</option>
-            <option value="6">7成新以上</option>
-            <option value="4">5成新以上</option>
-          </select>
-        </div>
-        <div class="filter-group">
-          <label>搜索</label>
-          <input type="text" id="searchKeyword" placeholder="书名/作者" onchange="loadBooks()" />
-        </div>
-        <button class="btn btn-primary btn-sm" onclick="loadBooks()" style="margin-bottom:2px">搜索</button>
-      </div>
-
-      <!-- Section: 在售图书 -->
-      <div class="section-title">在售图书</div>
-      <div id="bookList"><div class="loading"><div class="spinner"></div></div></div>
-      <div class="pagination" id="bookPagination"></div>
-    </div>
-
-    <!-- ===== Book Detail ===== -->
-    <div class="page" id="page-book-detail">
-      <a onclick="showPage('home')" style="cursor:pointer;display:inline-block;margin-bottom:1rem;font-size:.875rem">&larr; 返回列表</a>
-      <div id="bookDetailContent"><div class="loading"><div class="spinner"></div></div></div>
-    </div>
-
-    <!-- ===== My Books ===== -->
-    <div class="page" id="page-mybooks">
-      <div class="card-header"><h2 class="card-title">我发布的图书</h2><button class="btn btn-primary" onclick="openPublishModal()">+ 发布图书</button></div>
-      <div id="myBooksList"><div class="loading"><div class="spinner"></div></div></div>
-    </div>
-
-    <!-- ===== Favorites ===== -->
-    <div class="page" id="page-favorites">
-      <h2 class="card-title mb-2">我的收藏</h2>
-      <div id="favoritesList"><div class="loading"><div class="spinner"></div></div></div>
-    </div>
-
-    <!-- ===== Orders ===== -->
-    <div class="page" id="page-orders">
-      <h2 class="card-title mb-2">我购买的订单</h2>
-      <div id="ordersList"><div class="loading"><div class="spinner"></div></div></div>
-    </div>
-
-    <!-- ===== Sales ===== -->
-    <div class="page" id="page-sales">
-      <h2 class="card-title mb-2">我的售出</h2>
-      <div id="salesList"><div class="loading"><div class="spinner"></div></div></div>
-    </div>
-
-    <!-- ===== Messages ===== -->
-    <div class="page" id="page-messages">
-      <div class="chat-container" id="chatContainer">
-        <div class="chat-sidebar" id="chatSidebar"><div class="loading" style="padding:1rem"><div class="spinner"></div></div></div>
-        <div class="chat-main">
-          <div class="chat-header" id="chatHeader">选择一个会话</div>
-          <div class="chat-messages" id="chatMessages"><div class="empty"><p>请从左侧选择一个会话</p></div></div>
-          <div class="chat-input" id="chatInputArea" style="display:none">
-            <input type="text" id="chatInput" placeholder="输入消息..." @keyup.enter="sendChatMessage()" />
-            <button onclick="sendChatMessage()">➤</button>
+      <!-- ===== Book Detail ===== -->
+      <div class="page" id="page-book-detail">
+        <a onclick="showPage('home')"
+          style="cursor:pointer;display:inline-block;margin-bottom:1rem;font-size:.875rem">&larr; 返回列表</a>
+        <div id="bookDetailContent">
+          <div class="loading">
+            <div class="spinner"></div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- ===== Profile ===== -->
-    <div class="page" id="page-profile">
-      <div class="card" style="max-width:600px;margin:0 auto">
-        <h2 class="card-title mb-2">个人信息</h2>
-        <div id="profileContent"><div class="loading"><div class="spinner"></div></div></div>
+      <!-- ===== My Books ===== -->
+      <div class="page" id="page-mybooks">
+        <div class="card-header">
+          <h2 class="card-title">我发布的图书</h2><button class="btn btn-primary" onclick="openPublishModal()">+ 发布图书</button>
+        </div>
+        <div id="myBooksList">
+          <div class="loading">
+            <div class="spinner"></div>
+          </div>
+        </div>
       </div>
-    </div>
 
-    <!-- ===== Admin ===== -->
-    <div class="page" id="page-admin">
-      <h2 class="card-title mb-2">管理后台</h2>
-      <div id="statsContainer" class="stats-grid"></div>
-      <div class="card">
-        <div class="card-header"><span class="card-title">图书管理</span></div>
-        <div id="adminBooksTable"><div class="loading"><div class="spinner"></div></div></div>
+      <!-- ===== Favorites ===== -->
+      <div class="page" id="page-favorites">
+        <h2 class="card-title mb-2">我的收藏</h2>
+        <div id="favoritesList">
+          <div class="loading">
+            <div class="spinner"></div>
+          </div>
+        </div>
       </div>
-      <div class="card mt-2">
-        <div class="card-header"><span class="card-title">分类管理</span><button class="btn btn-primary btn-sm" onclick="openCategoryModal()">+ 添加分类</button></div>
-        <div id="adminCategories"><div class="loading"><div class="spinner"></div></div></div>
-      </div>
-    </div>
-  </main>
-</div>
 
-<!-- ===== Footer ===== -->
-<footer class="footer">
-  <div class="footer-inner">
-    <div class="footer-brand">📚 XATU书市</div>
-    <div class="footer-dev">
-      <span class="dev-tag">👨‍💻 Developer</span>
-      <p>西安工业大学 · Joker-0111 &mdash; 让知识循环，让校园更环保</p>
-    </div>
-    <p>&copy; 2026 XATU-Book-Exchange. All rights reserved.</p>
+      <!-- ===== Orders ===== -->
+      <div class="page" id="page-orders">
+        <h2 class="card-title mb-2">我购买的订单</h2>
+        <div id="ordersList">
+          <div class="loading">
+            <div class="spinner"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== Sales ===== -->
+      <div class="page" id="page-sales">
+        <h2 class="card-title mb-2">我的售出</h2>
+        <div id="salesList">
+          <div class="loading">
+            <div class="spinner"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== Messages ===== -->
+      <div class="page" id="page-messages">
+        <div class="chat-container" id="chatContainer">
+          <div class="chat-sidebar" id="chatSidebar">
+            <div class="loading" style="padding:1rem">
+              <div class="spinner"></div>
+            </div>
+          </div>
+          <div class="chat-main">
+            <div class="chat-header" id="chatHeader">选择一个会话</div>
+            <div class="chat-messages" id="chatMessages">
+              <div class="empty">
+                <p>请从左侧选择一个会话</p>
+              </div>
+            </div>
+            <div class="chat-input" id="chatInputArea" style="display:none">
+              <input type="text" id="chatInput" placeholder="输入消息..." @keyup.enter="sendChatMessage()" />
+              <button onclick="sendChatMessage()">➤</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== Profile ===== -->
+      <div class="page" id="page-profile">
+        <div class="card" style="max-width:600px;margin:0 auto">
+          <h2 class="card-title mb-2">个人信息</h2>
+          <div id="profileContent">
+            <div class="loading">
+              <div class="spinner"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== Admin ===== -->
+      <div class="page" id="page-admin">
+        <h2 class="card-title mb-2">管理后台</h2>
+        <div id="statsContainer" class="stats-grid"></div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">图书管理</span></div>
+          <div id="adminBooksTable">
+            <div class="loading">
+              <div class="spinner"></div>
+            </div>
+          </div>
+        </div>
+        <div class="card mt-2">
+          <div class="card-header"><span class="card-title">分类管理</span><button class="btn btn-primary btn-sm"
+              onclick="openCategoryModal()">+ 添加分类</button></div>
+          <div id="adminCategories">
+            <div class="loading">
+              <div class="spinner"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
   </div>
-</footer>
 
-<!-- ===== Modal ===== -->
-<div class="modal-overlay" id="modalOverlay">
-  <div class="modal" id="modalContent"></div>
-</div>
+  <!-- ===== Footer ===== -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">📚 XATU书市</div>
+      <div class="footer-dev">
+        <span class="dev-tag">👨‍💻 Developer</span>
+        <p>西安工业大学 · Joker-0111 &mdash; 让知识循环，让校园更环保</p>
+      </div>
+      <p>&copy; 2026 XATU-Book-Exchange. All rights reserved.</p>
+    </div>
+  </footer>
 
-<!-- ===== Toast ===== -->
-<div class="toast" id="toast"></div>
+  <!-- ===== Modal ===== -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="modalContent"></div>
+  </div>
 
-<script>
-// =====================================================
-// State
-// =====================================================
-const API = '/api/v1'; // use relative to work with any host
-let currentUser = null;
-let currentPage = 'home';
-let bookPage = 1;
-let selectedCategory = 0;
-let chatOtherUserId = null;
-let bannerTimer = null;
-let bannerIndex = 0;
+  <!-- ===== Toast ===== -->
+  <div class="toast" id="toast"></div>
 
-function getToken() { return localStorage.getItem('token'); }
-function setToken(t) { localStorage.setItem('token', t); }
-function getRefreshToken() { return localStorage.getItem('refresh_token'); }
-function setRefreshToken(t) { localStorage.setItem('refresh_token', t); }
-function clearToken() { localStorage.removeItem('token'); localStorage.removeItem('refresh_token'); currentUser = null; }
+  <script>
+    // =====================================================
+    // State
+    // =====================================================
+    const API = '/api/v1'; // use relative to work with any host
+    let currentUser = null;
+    let currentPage = 'home';
+    let bookPage = 1;
+    let selectedCategory = 0;
+    let chatOtherUserId = null;
+    let bannerTimer = null;
+    let bannerIndex = 0;
 
-// =====================================================
-// Toast
-// =====================================================
-function toast(msg, type = 'info') {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.className = 'toast toast-' + type;
-  el.classList.add('show');
-  clearTimeout(el._timer);
-  el._timer = setTimeout(() => el.classList.remove('show'), 2500);
-}
+    function getToken() { return localStorage.getItem('token'); }
+    function setToken(t) { localStorage.setItem('token', t); }
+    function getRefreshToken() { return localStorage.getItem('refresh_token'); }
+    function setRefreshToken(t) { localStorage.setItem('refresh_token', t); }
+    function clearToken() { localStorage.removeItem('token'); localStorage.removeItem('refresh_token'); currentUser = null; }
 
-// =====================================================
-// API helper
-// =====================================================
-async function api(method, path, body = null, auth = true) {
-  const opts = { method, headers: {} };
-  if (body && !(body instanceof FormData)) {
-    opts.headers['Content-Type'] = 'application/json';
-    opts.body = JSON.stringify(body);
-  } else if (body instanceof FormData) {
-    opts.body = body;
-  }
-  if (auth && getToken()) {
-    opts.headers['Authorization'] = 'Bearer ' + getToken();
-  }
-  try {
-    const res = await fetch(API + path, opts);
-    const data = await res.json();
-    if (data.code !== 0) {
-      throw new Error(data.message || '请求失败');
+    // =====================================================
+    // Toast
+    // =====================================================
+    function toast(msg, type = 'info') {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.className = 'toast toast-' + type;
+      el.classList.add('show');
+      clearTimeout(el._timer);
+      el._timer = setTimeout(() => el.classList.remove('show'), 2500);
     }
-    return data;
-  } catch (e) {
-    // Try refresh token for 401
-    if (e.message === '未认证' && getRefreshToken()) {
+
+    // =====================================================
+    // API helper
+    // =====================================================
+    async function api(method, path, body = null, auth = true) {
+      const opts = { method, headers: {} };
+      if (body && !(body instanceof FormData)) {
+        opts.headers['Content-Type'] = 'application/json';
+        opts.body = JSON.stringify(body);
+      } else if (body instanceof FormData) {
+        opts.body = body;
+      }
+      if (auth && getToken()) {
+        opts.headers['Authorization'] = 'Bearer ' + getToken();
+      }
       try {
-        const refRes = await fetch(API + '/public/refresh-token', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ refresh_token: getRefreshToken() })
-        });
-        const refData = await refRes.json();
-        if (refData.code === 0) {
-          setToken(refData.data.access_token);
-          setRefreshToken(refData.data.refresh_token);
-          // retry
-          opts.headers['Authorization'] = 'Bearer ' + getToken();
-          const retryRes = await fetch(API + path, opts);
-          const retryData = await retryRes.json();
-          if (retryData.code !== 0) throw new Error(retryData.message);
-          return retryData;
+        const res = await fetch(API + path, opts);
+        const data = await res.json();
+        if (data.code !== 0) {
+          throw new Error(data.message || '请求失败');
         }
-      } catch(_) {}
-      clearToken();
-      showPage('login');
-      toast('登录已过期，请重新登录', 'error');
-      throw new Error('未认证');
+        return data;
+      } catch (e) {
+        // Try refresh token for 401
+        if (e.message === '未认证' && getRefreshToken()) {
+          try {
+            const refRes = await fetch(API + '/public/refresh-token', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ refresh_token: getRefreshToken() })
+            });
+            const refData = await refRes.json();
+            if (refData.code === 0) {
+              setToken(refData.data.access_token);
+              setRefreshToken(refData.data.refresh_token);
+              // retry
+              opts.headers['Authorization'] = 'Bearer ' + getToken();
+              const retryRes = await fetch(API + path, opts);
+              const retryData = await retryRes.json();
+              if (retryData.code !== 0) throw new Error(retryData.message);
+              return retryData;
+            }
+          } catch (_) { }
+          clearToken();
+          showPage('login');
+          toast('登录已过期，请重新登录', 'error');
+          throw new Error('未认证');
+        }
+        throw e;
+      }
     }
-    throw e;
-  }
-}
 
-// =====================================================
-// Navigation
-// =====================================================
-function showPage(name) {
-  // Hide all pages
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  const page = document.getElementById('page-' + name);
-  if (page) page.classList.add('active');
+    // =====================================================
+    // Navigation
+    // =====================================================
+    function showPage(name) {
+      // Hide all pages
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      const page = document.getElementById('page-' + name);
+      if (page) page.classList.add('active');
 
-  // Nav links
-  document.querySelectorAll('.nav-links a').forEach(a => {
-    a.classList.toggle('active', a.dataset.page === name);
-  });
+      // Nav links
+      document.querySelectorAll('.nav-links a').forEach(a => {
+        a.classList.toggle('active', a.dataset.page === name);
+      });
 
-  currentPage = name;
+      currentPage = name;
 
-  // Load content
-  switch (name) {
-    case 'home': loadHome(); break;
-    case 'mybooks': loadMyBooks(); break;
-    case 'favorites': loadFavorites(); break;
-    case 'orders': loadOrders(); break;
-    case 'sales': loadSales(); break;
-    case 'messages': loadConversations(); break;
-    case 'profile': loadProfile(); break;
-    case 'admin': loadAdmin(); break;
-  }
-}
+      // Load content
+      switch (name) {
+        case 'home': loadHome(); break;
+        case 'mybooks': loadMyBooks(); break;
+        case 'favorites': loadFavorites(); break;
+        case 'orders': loadOrders(); break;
+        case 'sales': loadSales(); break;
+        case 'messages': loadConversations(); break;
+        case 'profile': loadProfile(); break;
+        case 'admin': loadAdmin(); break;
+      }
+    }
 
-function updateNavbar() {
-  const loggedIn = !!getToken();
-  document.getElementById('navAuth').style.display = loggedIn ? 'none' : 'block';
-  document.getElementById('userInfo').style.display = loggedIn ? 'block' : 'none';
-  document.getElementById('logoutBtn').style.display = loggedIn ? 'block' : 'none';
-  document.querySelectorAll('.nav-links a[data-page]:not([data-page="home"])').forEach(a => {
-    a.style.display = loggedIn ? '' : 'none';
-  });
-  if (loggedIn && currentUser) {
-    document.getElementById('userNameDisplay').textContent = '👋 ' + currentUser.nickname;
-    document.getElementById('adminNavLink').style.display = currentUser.is_admin == 1 ? '' : 'none';
-  }
-}
+    function updateNavbar() {
+      const loggedIn = !!getToken();
+      document.getElementById('navAuth').style.display = loggedIn ? 'none' : 'block';
+      document.getElementById('userInfo').style.display = loggedIn ? 'block' : 'none';
+      document.getElementById('logoutBtn').style.display = loggedIn ? 'block' : 'none';
+      document.querySelectorAll('.nav-links a[data-page]:not([data-page="home"])').forEach(a => {
+        a.style.display = loggedIn ? '' : 'none';
+      });
+      if (loggedIn && currentUser) {
+        document.getElementById('userNameDisplay').textContent = '👋 ' + currentUser.nickname;
+        document.getElementById('adminNavLink').style.display = currentUser.is_admin == 1 ? '' : 'none';
+      }
+    }
 
-// =====================================================
-// Auth
-// =====================================================
-function switchAuthTab(tab) {
-  document.querySelectorAll('.auth-tabs button').forEach(b => b.classList.toggle('active', b.textContent.includes(tab === 'login' ? '登录' : '注册')));
-  document.getElementById('authLogin').style.display = tab === 'login' ? 'block' : 'none';
-  document.getElementById('authRegister').style.display = tab === 'register' ? 'block' : 'none';
-}
+    // =====================================================
+    // Auth
+    // =====================================================
+    function switchAuthTab(tab) {
+      document.querySelectorAll('.auth-tabs button').forEach(b => b.classList.toggle('active', b.textContent.includes(tab === 'login' ? '登录' : '注册')));
+      document.getElementById('authLogin').style.display = tab === 'login' ? 'block' : 'none';
+      document.getElementById('authRegister').style.display = tab === 'register' ? 'block' : 'none';
+    }
 
-async function login() {
-  const phone = document.getElementById('loginPhone').value.trim();
-  const password = document.getElementById('loginPassword').value;
-  if (!phone || !password) { toast('请填写完整信息', 'error'); return; }
-  try {
-    const res = await api('POST', '/public/login', { phone, password }, false);
-    setToken(res.data.access_token);
-    setRefreshToken(res.data.refresh_token);
-    currentUser = res.data.user;
-    updateNavbar();
-    toast('登录成功！', 'success');
-    showPage('home');
-  } catch (e) {
-    toast(e.message || '登录失败', 'error');
-  }
-}
+    async function login() {
+      const phone = document.getElementById('loginPhone').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      if (!phone || !password) { toast('请填写完整信息', 'error'); return; }
+      try {
+        const res = await api('POST', '/public/login', { phone, password }, false);
+        setToken(res.data.access_token);
+        setRefreshToken(res.data.refresh_token);
+        currentUser = res.data.user;
+        updateNavbar();
+        toast('登录成功！', 'success');
+        showPage('home');
+      } catch (e) {
+        toast(e.message || '登录失败', 'error');
+      }
+    }
 
-async function register() {
-  const phone = document.getElementById('regPhone').value.trim();
-  const nickname = document.getElementById('regNickname').value.trim();
-  const password = document.getElementById('regPassword').value;
-  const major = document.getElementById('regMajor').value.trim();
-  const wechat = document.getElementById('regWechat').value.trim();
-  if (!phone || !nickname || !password) { toast('请填写完整信息', 'error'); return; }
-  try {
-    const body = { phone, nickname, password };
-    if (major) body.major = major;
-    if (wechat) body.wechat = wechat;
-    await api('POST', '/public/register', body, false);
-    toast('注册成功，请登录', 'success');
-    switchAuthTab('login');
-    document.getElementById('loginPhone').value = phone;
-  } catch (e) {
-    toast(e.message || '注册失败', 'error');
-  }
-}
+    async function register() {
+      const phone = document.getElementById('regPhone').value.trim();
+      const nickname = document.getElementById('regNickname').value.trim();
+      const password = document.getElementById('regPassword').value;
+      const major = document.getElementById('regMajor').value.trim();
+      const wechat = document.getElementById('regWechat').value.trim();
+      if (!phone || !nickname || !password) { toast('请填写完整信息', 'error'); return; }
+      try {
+        const body = { phone, nickname, password };
+        if (major) body.major = major;
+        if (wechat) body.wechat = wechat;
+        await api('POST', '/public/register', body, false);
+        toast('注册成功，请登录', 'success');
+        switchAuthTab('login');
+        document.getElementById('loginPhone').value = phone;
+      } catch (e) {
+        toast(e.message || '注册失败', 'error');
+      }
+    }
 
-async function logout() {
-  // 调用后端登出接口将当前 Token 加入黑名单
-  if (getToken()) {
-    try {
-      await api('POST', '/user/logout');
-    } catch(e) { /* ignore */ }
-  }
-  clearToken();
-  updateNavbar();
-  toast('已退出登录', 'info');
-  showPage('home');
-}
+    async function logout() {
+      // 调用后端登出接口将当前 Token 加入黑名单
+      if (getToken()) {
+        try {
+          await api('POST', '/user/logout');
+        } catch (e) { /* ignore */ }
+      }
+      clearToken();
+      updateNavbar();
+      toast('已退出登录', 'info');
+      showPage('home');
+    }
 
-// =====================================================
-// Home
-// =====================================================
-async function loadHome() {
-  await loadBanners();
-  await loadCategories();
-  await loadBooks();
-  // Load public statistics for the feature cards
-  try {
-    const res = await api('GET', '/public/statistics', null, false);
-    const d = res.data || {};
-    document.getElementById('featureBookCount').textContent = d.book_count || 0;
-    document.getElementById('featureUserCount').textContent = d.user_count || 0;
-    document.getElementById('featureDoneCount').textContent = d.order_count || 0;
-  } catch(e) {
-    // fallback: at least show book count from list
-    try {
-      const books = await api('GET', '/public/books?page=1&page_size=1', null, false);
-      document.getElementById('featureBookCount').textContent = books.meta?.total || '?';
-    } catch(e2) {}
-  }
-}
+    // =====================================================
+    // Home
+    // =====================================================
+    async function loadHome() {
+      await loadBanners();
+      await loadCategories();
+      await loadBooks();
+      // Load public statistics for the feature cards
+      try {
+        const res = await api('GET', '/public/statistics', null, false);
+        const d = res.data || {};
+        document.getElementById('featureBookCount').textContent = d.book_count || 0;
+        document.getElementById('featureUserCount').textContent = d.user_count || 0;
+        document.getElementById('featureDoneCount').textContent = d.order_count || 0;
+      } catch (e) {
+        // fallback: at least show book count from list
+        try {
+          const books = await api('GET', '/public/books?page=1&page_size=1', null, false);
+          document.getElementById('featureBookCount').textContent = books.meta?.total || '?';
+        } catch (e2) { }
+      }
+    }
 
-// ===== Banner themes =====
-const BANNER_THEMES = [
-  { gradient: 'linear-gradient(135deg, #4f46e5, #7c3aed, #a855f7)', icon: '📚', title: 'XATU 二手书交易平台', desc: '让知识循环，让校园更环保', sub: '校内实名交易 · 安全可靠' },
-  { gradient: 'linear-gradient(135deg, #0ea5e9, #06b6d4, #14b8a6)', icon: '🎓', title: '教材循环利用', desc: '低价淘到学长学姐的宝藏教材', sub: '省钱又环保' },
-  { gradient: 'linear-gradient(135deg, #f59e0b, #ef4444, #ec4899)', icon: '🌟', title: '考研专区', desc: '考研资料、真题、笔记一站式淘', sub: '上岸必备，全场低价' },
-];
+    // ===== Banner themes =====
+    const BANNER_THEMES = [
+      { gradient: 'linear-gradient(135deg, #f59e0b, #ef4444, #ec4899)', icon: '🌟', title: '系统当前处于初级开发维护中，请勿抗压测试', desc: '如果您有更好的想法，联系方式', sub: '邮箱：joker0111gmj@gmail.com' },
+      { gradient: 'linear-gradient(135deg, #4f46e5, #7c3aed, #a855f7)', icon: '📚', title: 'XATU 二手书交易平台', desc: '让知识循环，让校园更环保', sub: '校内实名交易 · 安全可靠' },
+      { gradient: 'linear-gradient(135deg, #0ea5e9, #06b6d4, #14b8a6)', icon: '🎓', title: '教材循环利用', desc: '低价淘到学长学姐的宝藏教材', sub: '省钱又环保' },
 
-// -- Banners --  (beautiful CSS gradient slides)
-async function loadBanners() {
-  const container = document.getElementById('bannerContainer');
-  try {
-    const res = await api('GET', '/public/banners', null, false);
-    const banners = res.data || [];
-    const hasRealBanners = banners.length > 1;
-    const slides = hasRealBanners ? banners : BANNER_THEMES;
+    ];
 
-    let html = '';
-    slides.forEach((item, i) => {
-      if (hasRealBanners) {
-        // If banner has image_url, show it; otherwise gradient fallback
-        const theme = BANNER_THEMES[i % BANNER_THEMES.length];
-        html += `<div class="banner-slide ${i===0?'active':''}">
+    // -- Banners --  (beautiful CSS gradient slides)
+    async function loadBanners() {
+      const container = document.getElementById('bannerContainer');
+      try {
+        const res = await api('GET', '/public/banners', null, false);
+        const banners = res.data || [];
+        const hasRealBanners = banners.length > 1;
+        const slides = hasRealBanners ? banners : BANNER_THEMES;
+
+        let html = '';
+        slides.forEach((item, i) => {
+          if (hasRealBanners) {
+            // If banner has image_url, show it; otherwise gradient fallback
+            const theme = BANNER_THEMES[i % BANNER_THEMES.length];
+            html += `<div class="banner-slide ${i === 0 ? 'active' : ''}">
           <div class="banner-inner" style="background:${theme.gradient}">
             <div class="banner-icon">${theme.icon}</div>
             <h2>${item.title || theme.title}</h2>
@@ -775,9 +2041,9 @@ async function loadBanners() {
             <div class="banner-stat"><span><strong>✦</strong> ${theme.sub}</span></div>
           </div>
         </div>`;
-      } else {
-        const theme = BANNER_THEMES[i % BANNER_THEMES.length];
-        html += `<div class="banner-slide ${i===0?'active':''}">
+          } else {
+            const theme = BANNER_THEMES[i % BANNER_THEMES.length];
+            html += `<div class="banner-slide ${i === 0 ? 'active' : ''}">
           <div class="banner-inner" style="background:${theme.gradient}">
             <div class="banner-icon">${theme.icon}</div>
             <h2>${theme.title}</h2>
@@ -785,105 +2051,105 @@ async function loadBanners() {
             <div class="banner-stat"><span><strong>✦</strong> ${theme.sub}</span></div>
           </div>
         </div>`;
+          }
+        });
+        html += `<div class="banner-dots">${slides.map((_, i) => `<button class="${i === 0 ? 'active' : ''}" onclick="goBanner(${i})"></button>`).join('')}</div>`;
+        container.innerHTML = html;
+        bannerIndex = 0;
+        if (bannerTimer) clearInterval(bannerTimer);
+        if (slides.length > 1) bannerTimer = setInterval(() => { goBanner((bannerIndex + 1) % slides.length); }, 5000);
+      } catch (e) {
+        container.innerHTML = `<div class="banner-slide active"><div class="banner-inner" style="background:linear-gradient(135deg,#4f46e5,#7c3aed);text-align:center"><div class="banner-icon">📚</div><h2>XATU 二手书交易平台</h2><p>欢迎来到校园二手书市集</p></div></div>`;
       }
-    });
-    html += `<div class="banner-dots">${slides.map((_,i)=>`<button class="${i===0?'active':''}" onclick="goBanner(${i})"></button>`).join('')}</div>`;
-    container.innerHTML = html;
-    bannerIndex = 0;
-    if (bannerTimer) clearInterval(bannerTimer);
-    if (slides.length > 1) bannerTimer = setInterval(() => { goBanner((bannerIndex + 1) % slides.length); }, 5000);
-  } catch(e) {
-    container.innerHTML = `<div class="banner-slide active"><div class="banner-inner" style="background:linear-gradient(135deg,#4f46e5,#7c3aed);text-align:center"><div class="banner-icon">📚</div><h2>XATU 二手书交易平台</h2><p>欢迎来到校园二手书市集</p></div></div>`;
-  }
-}
-
-function goBanner(i) {
-  const slides = document.querySelectorAll('.banner-slide');
-  const dots = document.querySelectorAll('.banner-dots button');
-  slides.forEach((s, idx) => s.classList.toggle('active', idx === i));
-  dots.forEach((d, idx) => d.classList.toggle('active', idx === i));
-  bannerIndex = i;
-}
-
-// -- Categories --
-async function loadCategories() {
-  const container = document.getElementById('categoryChips');
-  try {
-    const res = await api('GET', '/public/categories', null, false);
-    const rootNodes = res.data || [];
-    // 只显示一级分类（parent_id=0 的根节点）
-    container.innerHTML = `<span class="category-chip ${selectedCategory===0?'active':''}" onclick="selectCategory(0)">全部</span>` +
-      rootNodes.map(c => `<span class="category-chip ${selectedCategory===c.id?'active':''}" onclick="selectCategory(${c.id})">${c.name}</span>`).join('');
-  } catch(e) {
-    container.innerHTML = '';
-  }
-}
-
-function flattenCategories(tree, depth = 0) {
-  let result = [];
-  for (const node of tree) {
-    const flat = { ...node.category || node, depth };
-    result.push(flat);
-    if (node.children && node.children.length) {
-      result = result.concat(flattenCategories(node.children, depth + 1));
-    }
-  }
-  return result;
-}
-
-function selectCategory(id) {
-  selectedCategory = id;
-  document.querySelectorAll('.category-chip').forEach(c => c.classList.toggle('active', parseInt(c.dataset.cat || c.textContent) === id || (id === 0 && c.textContent === '全部')));
-  // Actually re-render with proper active state
-  loadCategories().then(() => {
-    // category chips were just re-rendered, now select the right one
-    document.querySelectorAll('.category-chip').forEach(c => {
-      const isAll = c.textContent === '全部';
-      if ((id === 0 && isAll) || c.textContent == id) c.classList.add('active');
-    });
-  });
-  bookPage = 1;
-  loadBooks();
-}
-
-// -- Books --
-async function loadBooks() {
-  const container = document.getElementById('bookList');
-  const pagination = document.getElementById('bookPagination');
-  try {
-    const params = new URLSearchParams();
-    params.set('page', bookPage);
-    params.set('page_size', 20);
-    params.set('sort', document.getElementById('sortSelect')?.value || 'created_at');
-    params.set('order', document.getElementById('orderSelect')?.value || 'DESC');
-    const minPrice = document.getElementById('minPrice')?.value;
-    const maxPrice = document.getElementById('maxPrice')?.value;
-    const condition = document.getElementById('conditionFilter')?.value;
-    const keyword = document.getElementById('searchKeyword')?.value;
-    if (selectedCategory > 0) params.set('category_id', selectedCategory);
-    if (minPrice) params.set('min_price', minPrice);
-    if (maxPrice) params.set('max_price', maxPrice);
-    if (condition > 0) params.set('condition', condition);
-    if (keyword) params.set('keyword', keyword);
-
-    const res = await api('GET', '/public/books?' + params.toString(), null, false);
-    const books = res.data || [];
-    const meta = res.meta || { page: 1, page_size: 20, total: 0 };
-    const totalPages = Math.ceil(meta.total / meta.page_size) || 1;
-
-    if (books.length === 0) {
-      container.innerHTML = '<div class="empty"><div class="icon">📚</div><p>暂无图书</p></div>';
-      pagination.innerHTML = '';
-      return;
     }
 
-    container.innerHTML = '<div class="book-grid">' + books.map(b => `
+    function goBanner(i) {
+      const slides = document.querySelectorAll('.banner-slide');
+      const dots = document.querySelectorAll('.banner-dots button');
+      slides.forEach((s, idx) => s.classList.toggle('active', idx === i));
+      dots.forEach((d, idx) => d.classList.toggle('active', idx === i));
+      bannerIndex = i;
+    }
+
+    // -- Categories --
+    async function loadCategories() {
+      const container = document.getElementById('categoryChips');
+      try {
+        const res = await api('GET', '/public/categories', null, false);
+        const rootNodes = res.data || [];
+        // 只显示一级分类（parent_id=0 的根节点）
+        container.innerHTML = `<span class="category-chip ${selectedCategory === 0 ? 'active' : ''}" onclick="selectCategory(0)">全部</span>` +
+          rootNodes.map(c => `<span class="category-chip ${selectedCategory === c.id ? 'active' : ''}" onclick="selectCategory(${c.id})">${c.name}</span>`).join('');
+      } catch (e) {
+        container.innerHTML = '';
+      }
+    }
+
+    function flattenCategories(tree, depth = 0) {
+      let result = [];
+      for (const node of tree) {
+        const flat = { ...node.category || node, depth };
+        result.push(flat);
+        if (node.children && node.children.length) {
+          result = result.concat(flattenCategories(node.children, depth + 1));
+        }
+      }
+      return result;
+    }
+
+    function selectCategory(id) {
+      selectedCategory = id;
+      document.querySelectorAll('.category-chip').forEach(c => c.classList.toggle('active', parseInt(c.dataset.cat || c.textContent) === id || (id === 0 && c.textContent === '全部')));
+      // Actually re-render with proper active state
+      loadCategories().then(() => {
+        // category chips were just re-rendered, now select the right one
+        document.querySelectorAll('.category-chip').forEach(c => {
+          const isAll = c.textContent === '全部';
+          if ((id === 0 && isAll) || c.textContent == id) c.classList.add('active');
+        });
+      });
+      bookPage = 1;
+      loadBooks();
+    }
+
+    // -- Books --
+    async function loadBooks() {
+      const container = document.getElementById('bookList');
+      const pagination = document.getElementById('bookPagination');
+      try {
+        const params = new URLSearchParams();
+        params.set('page', bookPage);
+        params.set('page_size', 20);
+        params.set('sort', document.getElementById('sortSelect')?.value || 'created_at');
+        params.set('order', document.getElementById('orderSelect')?.value || 'DESC');
+        const minPrice = document.getElementById('minPrice')?.value;
+        const maxPrice = document.getElementById('maxPrice')?.value;
+        const condition = document.getElementById('conditionFilter')?.value;
+        const keyword = document.getElementById('searchKeyword')?.value;
+        if (selectedCategory > 0) params.set('category_id', selectedCategory);
+        if (minPrice) params.set('min_price', minPrice);
+        if (maxPrice) params.set('max_price', maxPrice);
+        if (condition > 0) params.set('condition', condition);
+        if (keyword) params.set('keyword', keyword);
+
+        const res = await api('GET', '/public/books?' + params.toString(), null, false);
+        const books = res.data || [];
+        const meta = res.meta || { page: 1, page_size: 20, total: 0 };
+        const totalPages = Math.ceil(meta.total / meta.page_size) || 1;
+
+        if (books.length === 0) {
+          container.innerHTML = '<div class="empty"><div class="icon">📚</div><p>暂无图书</p></div>';
+          pagination.innerHTML = '';
+          return;
+        }
+
+        container.innerHTML = '<div class="book-grid">' + books.map(b => `
       <div class="book-card" onclick="showBookDetail(${b.id})">
         <div class="book-card-img">
           ${b.images && b.images.length ? `<img src="${b.images[0]}" alt="${b.title}" onerror="this.parentElement.innerHTML='<span class=\\'no-img\\'>📖</span>'"/>` : '<span class="no-img">📖</span>'}
         </div>
         <div class="book-card-body">
-          <h3 title="${b.title.replace(/"/g,'&quot;')}">${b.title}</h3>
+          <h3 title="${b.title.replace(/"/g, '&quot;')}">${b.title}</h3>
           <div class="author">${b.author || '未知作者'}</div>
           <div class="price">¥${Number(b.selling_price).toFixed(2)}</div>
           <div class="meta">
@@ -894,54 +2160,54 @@ async function loadBooks() {
       </div>
     `).join('') + '</div>';
 
-    // Pagination
-    let phtml = '';
-    phtml += `<button onclick="goBookPage(${bookPage-1})" ${bookPage<=1?'disabled':''}>‹</button>`;
-    for (let i = 1; i <= totalPages; i++) {
-      if (i === 1 || i === totalPages || (i >= bookPage - 2 && i <= bookPage + 2)) {
-        phtml += `<button class="${i===bookPage?'active':''}" onclick="goBookPage(${i})">${i}</button>`;
-      } else if (i === bookPage - 3 || i === bookPage + 3) {
-        phtml += `<button disabled>…</button>`;
+        // Pagination
+        let phtml = '';
+        phtml += `<button onclick="goBookPage(${bookPage - 1})" ${bookPage <= 1 ? 'disabled' : ''}>‹</button>`;
+        for (let i = 1; i <= totalPages; i++) {
+          if (i === 1 || i === totalPages || (i >= bookPage - 2 && i <= bookPage + 2)) {
+            phtml += `<button class="${i === bookPage ? 'active' : ''}" onclick="goBookPage(${i})">${i}</button>`;
+          } else if (i === bookPage - 3 || i === bookPage + 3) {
+            phtml += `<button disabled>…</button>`;
+          }
+        }
+        phtml += `<button onclick="goBookPage(${bookPage + 1})" ${bookPage >= totalPages ? 'disabled' : ''}>›</button>`;
+        pagination.innerHTML = phtml;
+      } catch (e) {
+        container.innerHTML = '<div class="empty"><p>加载失败</p></div>';
       }
     }
-    phtml += `<button onclick="goBookPage(${bookPage+1})" ${bookPage>=totalPages?'disabled':''}>›</button>`;
-    pagination.innerHTML = phtml;
-  } catch(e) {
-    container.innerHTML = '<div class="empty"><p>加载失败</p></div>';
-  }
-}
 
-function goBookPage(p) {
-  bookPage = p;
-  loadBooks();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
+    function goBookPage(p) {
+      bookPage = p;
+      loadBooks();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
-// =====================================================
-// Book Detail
-// =====================================================
-async function showBookDetail(id) {
-  showPage('book-detail');
-  const container = document.getElementById('bookDetailContent');
-  container.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
-  document.getElementById('page-book-detail').classList.add('active');
+    // =====================================================
+    // Book Detail
+    // =====================================================
+    async function showBookDetail(id) {
+      showPage('book-detail');
+      const container = document.getElementById('bookDetailContent');
+      container.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+      document.getElementById('page-book-detail').classList.add('active');
 
-  try {
-    const res = await api('GET', '/public/books/' + id, null, false);
-    const b = res.data;
-    let imgIndex = 0;
+      try {
+        const res = await api('GET', '/public/books/' + id, null, false);
+        const b = res.data;
+        let imgIndex = 0;
 
-    const render = () => {
-      const images = b.images && b.images.length ? b.images : [];
-      const isOwner = currentUser && currentUser.id === b.user_id;
+        const render = () => {
+          const images = b.images && b.images.length ? b.images : [];
+          const isOwner = currentUser && currentUser.id === b.user_id;
 
-      container.innerHTML = `
+          container.innerHTML = `
         <div class="book-detail">
           <div class="book-detail-images">
             <div class="book-detail-main-img">
               ${images.length ? `<img id="detailMainImg" src="${images[imgIndex]}" onerror="this.parentElement.innerHTML='<span class=\\'no-img\\'>📖</span>'"/>` : '<span class="no-img">📖</span>'}
             </div>
-            ${images.length > 1 ? `<div class="book-detail-thumbs">${images.map((url, i) => `<img src="${url}" class="${i===imgIndex?'active':''}" onclick="imgIndex=${i};document.getElementById('detailMainImg').src='${url}';document.querySelectorAll('.book-detail-thumbs img').forEach((e,j)=>e.classList.toggle('active',j===${i}))"/>`).join('')}</div>` : ''}
+            ${images.length > 1 ? `<div class="book-detail-thumbs">${images.map((url, i) => `<img src="${url}" class="${i === imgIndex ? 'active' : ''}" onclick="imgIndex=${i};document.getElementById('detailMainImg').src='${url}';document.querySelectorAll('.book-detail-thumbs img').forEach((e,j)=>e.classList.toggle('active',j===${i}))"/>`).join('')}</div>` : ''}
           </div>
           <div class="book-detail-info">
             <h2>${b.title}</h2>
@@ -962,222 +2228,222 @@ async function showBookDetail(id) {
           </div>
         </div>`;
 
-      // Check favorite status
-      if (getToken()) {
-        api('GET', '/favorites/check/' + b.id).then(r => {
-          const btn = document.getElementById('favBtn');
-          if (btn) {
-            btn.innerHTML = r.data?.favorited ? '❤️ 已收藏' : '🤍 收藏';
-            btn.classList.toggle('btn-primary', r.data?.favorited);
-            btn.classList.toggle('btn-outline', !r.data?.favorited);
+          // Check favorite status
+          if (getToken()) {
+            api('GET', '/favorites/check/' + b.id).then(r => {
+              const btn = document.getElementById('favBtn');
+              if (btn) {
+                btn.innerHTML = r.data?.favorited ? '❤️ 已收藏' : '🤍 收藏';
+                btn.classList.toggle('btn-primary', r.data?.favorited);
+                btn.classList.toggle('btn-outline', !r.data?.favorited);
+              }
+            }).catch(() => { });
           }
-        }).catch(()=>{});
+        };
+        render();
+      } catch (e) {
+        container.innerHTML = `<div class="empty"><p>图书不存在或已删除</p><a onclick="showPage('home')" style="cursor:pointer">返回首页</a></div>`;
       }
-    };
-    render();
-  } catch(e) {
-    container.innerHTML = `<div class="empty"><p>图书不存在或已删除</p><a onclick="showPage('home')" style="cursor:pointer">返回首页</a></div>`;
-  }
-}
-
-async function toggleFavorite(bookId) {
-  if (!getToken()) { toast('请先登录', 'error'); showPage('login'); return; }
-  try {
-    const check = await api('GET', '/favorites/check/' + bookId);
-    if (check.data?.favorited) {
-      await api('DELETE', '/favorites/' + bookId);
-      toast('已取消收藏', 'info');
-    } else {
-      await api('POST', '/favorites', { book_id: bookId });
-      toast('已收藏', 'success');
     }
-    // Refresh
-    showBookDetail(bookId);
-  } catch(e) {
-    toast(e.message, 'error');
-  }
-}
 
-async function buyBook(bookId) {
-  if (!getToken()) { toast('请先登录', 'error'); showPage('login'); return; }
-  openModal(`
+    async function toggleFavorite(bookId) {
+      if (!getToken()) { toast('请先登录', 'error'); showPage('login'); return; }
+      try {
+        const check = await api('GET', '/favorites/check/' + bookId);
+        if (check.data?.favorited) {
+          await api('DELETE', '/favorites/' + bookId);
+          toast('已取消收藏', 'info');
+        } else {
+          await api('POST', '/favorites', { book_id: bookId });
+          toast('已收藏', 'success');
+        }
+        // Refresh
+        showBookDetail(bookId);
+      } catch (e) {
+        toast(e.message, 'error');
+      }
+    }
+
+    async function buyBook(bookId) {
+      if (!getToken()) { toast('请先登录', 'error'); showPage('login'); return; }
+      openModal(`
     <h3>确认购买</h3>
-    <div class="form-group"><label>联系电话</label><input class="form-control" id="buyPhone" placeholder="选填" value="${currentUser?.phone||''}"/></div>
-    <div class="form-group"><label>微信号</label><input class="form-control" id="buyWechat" placeholder="选填" value="${currentUser?.wechat||''}"/></div>
+    <div class="form-group"><label>联系电话</label><input class="form-control" id="buyPhone" placeholder="选填" value="${currentUser?.phone || ''}"/></div>
+    <div class="form-group"><label>微信号</label><input class="form-control" id="buyWechat" placeholder="选填" value="${currentUser?.wechat || ''}"/></div>
     <div class="form-group"><label>备注</label><textarea class="form-control" id="buyNote" placeholder="选填"></textarea></div>
     <div class="modal-actions">
       <button class="btn btn-outline" onclick="closeModal()">取消</button>
       <button class="btn btn-primary" onclick="doBuy(${bookId})">确认购买</button>
     </div>
   `);
-}
+    }
 
-async function doBuy(bookId) {
-  try {
-    await api('POST', '/orders', {
-      book_id: bookId,
-      contact_phone: document.getElementById('buyPhone').value,
-      contact_wechat: document.getElementById('buyWechat').value,
-      note: document.getElementById('buyNote').value
-    });
-    closeModal();
-    toast('下单成功！等待卖家确认', 'success');
-    showBookDetail(bookId);
-  } catch(e) {
-    toast(e.message, 'error');
-  }
-}
+    async function doBuy(bookId) {
+      try {
+        await api('POST', '/orders', {
+          book_id: bookId,
+          contact_phone: document.getElementById('buyPhone').value,
+          contact_wechat: document.getElementById('buyWechat').value,
+          note: document.getElementById('buyNote').value
+        });
+        closeModal();
+        toast('下单成功！等待卖家确认', 'success');
+        showBookDetail(bookId);
+      } catch (e) {
+        toast(e.message, 'error');
+      }
+    }
 
-async function deleteBook(id) {
-  if (!confirm('确定删除该图书？')) return;
-  try {
-    await api('DELETE', '/books/' + id);
-    toast('已删除', 'success');
-    showPage('mybooks');
-  } catch(e) { toast(e.message, 'error'); }
-}
+    async function deleteBook(id) {
+      if (!confirm('确定删除该图书？')) return;
+      try {
+        await api('DELETE', '/books/' + id);
+        toast('已删除', 'success');
+        showPage('mybooks');
+      } catch (e) { toast(e.message, 'error'); }
+    }
 
-// =====================================================
-// My Books
-// =====================================================
-async function loadMyBooks() {
-  if (!getToken()) { document.getElementById('myBooksList').innerHTML = '<div class="empty"><p>请先登录</p></div>'; return; }
-  const container = document.getElementById('myBooksList');
-  try {
-    const res = await api('GET', '/user/books');
-    const books = res.data || [];
-    if (!books.length) { container.innerHTML = '<div class="empty"><div class="icon">📚</div><p>还没有发布图书，点击右上角发布</p></div>'; return; }
-    container.innerHTML = '<div class="book-grid">' + books.map(b => `
+    // =====================================================
+    // My Books
+    // =====================================================
+    async function loadMyBooks() {
+      if (!getToken()) { document.getElementById('myBooksList').innerHTML = '<div class="empty"><p>请先登录</p></div>'; return; }
+      const container = document.getElementById('myBooksList');
+      try {
+        const res = await api('GET', '/user/books');
+        const books = res.data || [];
+        if (!books.length) { container.innerHTML = '<div class="empty"><div class="icon">📚</div><p>还没有发布图书，点击右上角发布</p></div>'; return; }
+        container.innerHTML = '<div class="book-grid">' + books.map(b => `
       <div class="book-card" onclick="showBookDetail(${b.id})">
         <div class="book-card-img">${b.images && b.images.length ? `<img src="${b.images[0]}" onerror="this.parentElement.innerHTML='<span class=\\'no-img\\'>📖</span>'"/>` : '<span class="no-img">📖</span>'}</div>
         <div class="book-card-body">
           <h3>${b.title}</h3>
           <div class="price">¥${Number(b.selling_price).toFixed(2)}</div>
-          <div class="meta"><span class="${b.status===1?'badge badge-success':b.status===2?'badge badge-danger':'badge badge-gray'}">${b.status===1?'在售':b.status===2?'已售':'下架'}</span></div>
+          <div class="meta"><span class="${b.status === 1 ? 'badge badge-success' : b.status === 2 ? 'badge badge-danger' : 'badge badge-gray'}">${b.status === 1 ? '在售' : b.status === 2 ? '已售' : '下架'}</span></div>
         </div>
       </div>
     `).join('') + '</div>';
-  } catch(e) {
-    container.innerHTML = '<div class="empty"><p>加载失败</p></div>';
-  }
-}
-
-// =====================================================
-// Categories (flat list for dropdown)
-// =====================================================
-let allCategories = [];
-let categoriesLoaded = false;
-
-async function ensureCategoriesLoaded() {
-  if (categoriesLoaded) return;
-  try {
-    const res = await api('GET', '/public/categories', null, false);
-    allCategories = flattenCategories(res.data || []);
-    categoriesLoaded = true;
-  } catch(e) {
-    allCategories = [];
-  }
-}
-
-function categoryOptionsHtml(selectedId) {
-  // Build tree prefix: group parent categories
-  let html = '';
-  const parents = allCategories.filter(c => c.parent_id === 0);
-  const children = allCategories.filter(c => c.parent_id > 0);
-
-  for (const p of parents) {
-    const sel = selectedId === p.id ? 'selected' : '';
-    html += `<option value="${p.id}" ${sel}>├ ${p.name}</option>`;
-    for (const c of children) {
-      if (c.parent_id === p.id) {
-        const sel2 = selectedId === c.id ? 'selected' : '';
-        html += `<option value="${c.id}" ${sel2}>&nbsp;&nbsp;└ ${c.name}</option>`;
+      } catch (e) {
+        container.innerHTML = '<div class="empty"><p>加载失败</p></div>';
       }
     }
-  }
-  // Also add orphans (children whose parent isn't in the flat list)
-  const knownParentIds = new Set(parents.map(p => p.id));
-  for (const c of children) {
-    if (!knownParentIds.has(c.parent_id)) {
-      if (!parents.find(p => p.id === c.parent_id)) {
-        const sel = selectedId === c.id ? 'selected' : '';
-        html += `<option value="${c.id}" ${sel}>${c.name}</option>`;
+
+    // =====================================================
+    // Categories (flat list for dropdown)
+    // =====================================================
+    let allCategories = [];
+    let categoriesLoaded = false;
+
+    async function ensureCategoriesLoaded() {
+      if (categoriesLoaded) return;
+      try {
+        const res = await api('GET', '/public/categories', null, false);
+        allCategories = flattenCategories(res.data || []);
+        categoriesLoaded = true;
+      } catch (e) {
+        allCategories = [];
       }
     }
-  }
-  return html;
-}
 
-// =====================================================
-// Image Upload Helper
-// =====================================================
-// Stores uploaded image URLs for the current publish/edit session
-let pendingImages = [];
+    function categoryOptionsHtml(selectedId) {
+      // Build tree prefix: group parent categories
+      let html = '';
+      const parents = allCategories.filter(c => c.parent_id === 0);
+      const children = allCategories.filter(c => c.parent_id > 0);
 
-async function uploadImage(inputId, previewId) {
-  const input = document.getElementById(inputId);
-  if (!input || !input.files || !input.files[0]) return;
-  const file = input.files[0];
+      for (const p of parents) {
+        const sel = selectedId === p.id ? 'selected' : '';
+        html += `<option value="${p.id}" ${sel}>├ ${p.name}</option>`;
+        for (const c of children) {
+          if (c.parent_id === p.id) {
+            const sel2 = selectedId === c.id ? 'selected' : '';
+            html += `<option value="${c.id}" ${sel2}>&nbsp;&nbsp;└ ${c.name}</option>`;
+          }
+        }
+      }
+      // Also add orphans (children whose parent isn't in the flat list)
+      const knownParentIds = new Set(parents.map(p => p.id));
+      for (const c of children) {
+        if (!knownParentIds.has(c.parent_id)) {
+          if (!parents.find(p => p.id === c.parent_id)) {
+            const sel = selectedId === c.id ? 'selected' : '';
+            html += `<option value="${c.id}" ${sel}>${c.name}</option>`;
+          }
+        }
+      }
+      return html;
+    }
 
-  // Validate size (5MB)
-  if (file.size > 5 * 1024 * 1024) {
-    toast('图片不能超过5MB', 'error');
-    return;
-  }
+    // =====================================================
+    // Image Upload Helper
+    // =====================================================
+    // Stores uploaded image URLs for the current publish/edit session
+    let pendingImages = [];
 
-  // Validate type
-  if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
-    toast('仅支持 JPG/PNG/WebP 格式', 'error');
-    return;
-  }
+    async function uploadImage(inputId, previewId) {
+      const input = document.getElementById(inputId);
+      if (!input || !input.files || !input.files[0]) return;
+      const file = input.files[0];
 
-  const formData = new FormData();
-  formData.append('file', file);
+      // Validate size (5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        toast('图片不能超过5MB', 'error');
+        return;
+      }
 
-  try {
-    const res = await fetch('/api/v1/upload/image', {
-      method: 'POST',
-      headers: { 'Authorization': 'Bearer ' + getToken() },
-      body: formData
-    });
-    const data = await res.json();
-    if (data.code !== 0) throw new Error(data.message);
-    const url = data.data.url;
-    pendingImages.push(url);
-    renderImagePreview(previewId);
-    toast('图片上传成功', 'success');
-  } catch(e) {
-    toast('上传失败: ' + e.message, 'error');
-  }
-  input.value = '';
-}
+      // Validate type
+      if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+        toast('仅支持 JPG/PNG/WebP 格式', 'error');
+        return;
+      }
 
-function removePendingImage(index, previewId) {
-  pendingImages.splice(index, 1);
-  renderImagePreview(previewId);
-}
+      const formData = new FormData();
+      formData.append('file', file);
 
-function renderImagePreview(previewId) {
-  const container = document.getElementById(previewId);
-  if (!container) return;
-  if (pendingImages.length === 0) {
-    container.innerHTML = '<span style="color:var(--gray-400);font-size:.8rem">暂无图片</span>';
-    return;
-  }
-  container.innerHTML = pendingImages.map((url, i) =>
-    `<div style="position:relative;display:inline-block;margin:4px;width:80px;height:80px;border-radius:6px;overflow:hidden;border:1px solid var(--gray-200)">
+      try {
+        const res = await fetch('/api/v1/upload/image', {
+          method: 'POST',
+          headers: { 'Authorization': 'Bearer ' + getToken() },
+          body: formData
+        });
+        const data = await res.json();
+        if (data.code !== 0) throw new Error(data.message);
+        const url = data.data.url;
+        pendingImages.push(url);
+        renderImagePreview(previewId);
+        toast('图片上传成功', 'success');
+      } catch (e) {
+        toast('上传失败: ' + e.message, 'error');
+      }
+      input.value = '';
+    }
+
+    function removePendingImage(index, previewId) {
+      pendingImages.splice(index, 1);
+      renderImagePreview(previewId);
+    }
+
+    function renderImagePreview(previewId) {
+      const container = document.getElementById(previewId);
+      if (!container) return;
+      if (pendingImages.length === 0) {
+        container.innerHTML = '<span style="color:var(--gray-400);font-size:.8rem">暂无图片</span>';
+        return;
+      }
+      container.innerHTML = pendingImages.map((url, i) =>
+        `<div style="position:relative;display:inline-block;margin:4px;width:80px;height:80px;border-radius:6px;overflow:hidden;border:1px solid var(--gray-200)">
       <img src="${url}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='<div style=\\'display:flex;align-items:center;justify-content:center;height:100%;background:var(--gray-100);color:var(--gray-400);font-size:.7rem\\'>无效</div>'"/>
       <div onclick="removePendingImage(${i},'${previewId}')" style="position:absolute;top:-4px;right:-4px;width:20px;height:20px;border-radius:50%;background:var(--danger);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.75rem;cursor:pointer">×</div>
     </div>`
-  ).join('');
-}
+      ).join('');
+    }
 
-// -- Publish / Edit Book --
-async function openPublishModal() {
-  await ensureCategoriesLoaded();
-  pendingImages = [];
+    // -- Publish / Edit Book --
+    async function openPublishModal() {
+      await ensureCategoriesLoaded();
+      pendingImages = [];
 
-  openModal(`
+      openModal(`
     <h3>发布图书</h3>
     <div class="form-group"><label>书名 <span style="color:var(--danger)">*</span></label><input class="form-control" id="editTitle" placeholder="请输入书名" /></div>
     <div class="form-row">
@@ -1208,39 +2474,39 @@ async function openPublishModal() {
       <button class="btn btn-primary" onclick="doPublishBook()">发布</button>
     </div>
   `);
-}
+    }
 
-async function doPublishBook() {
-  const title = document.getElementById('editTitle').value.trim();
-  const category_id = parseInt(document.getElementById('editCategory').value);
-  const selling_price = parseFloat(document.getElementById('editPrice').value);
-  const condition = parseInt(document.getElementById('editCondition').value);
-  if (!title || !category_id || !selling_price || !condition) { toast('请填写必填项', 'error'); return; }
-  if (isNaN(category_id) || category_id <= 0) { toast('请选择分类', 'error'); return; }
-  try {
-    await api('POST', '/books', {
-      title, category_id, selling_price, condition,
-      author: document.getElementById('editAuthor').value.trim(),
-      description: document.getElementById('editDesc').value.trim(),
-      images: pendingImages
-    });
-    closeModal();
-    toast('发布成功！', 'success');
-    loadMyBooks();
-  } catch(e) { toast(e.message, 'error'); }
-}
+    async function doPublishBook() {
+      const title = document.getElementById('editTitle').value.trim();
+      const category_id = parseInt(document.getElementById('editCategory').value);
+      const selling_price = parseFloat(document.getElementById('editPrice').value);
+      const condition = parseInt(document.getElementById('editCondition').value);
+      if (!title || !category_id || !selling_price || !condition) { toast('请填写必填项', 'error'); return; }
+      if (isNaN(category_id) || category_id <= 0) { toast('请选择分类', 'error'); return; }
+      try {
+        await api('POST', '/books', {
+          title, category_id, selling_price, condition,
+          author: document.getElementById('editAuthor').value.trim(),
+          description: document.getElementById('editDesc').value.trim(),
+          images: pendingImages
+        });
+        closeModal();
+        toast('发布成功！', 'success');
+        loadMyBooks();
+      } catch (e) { toast(e.message, 'error'); }
+    }
 
-function editBook(id) {
-  api('GET', '/public/books/' + id).then(async (res) => {
-    const b = res.data;
-    pendingImages = (b.images || []).slice();
-    await ensureCategoriesLoaded();
+    function editBook(id) {
+      api('GET', '/public/books/' + id).then(async (res) => {
+        const b = res.data;
+        pendingImages = (b.images || []).slice();
+        await ensureCategoriesLoaded();
 
-    openModal(`
+        openModal(`
       <h3>编辑图书</h3>
-      <div class="form-group"><label>书名</label><input class="form-control" id="editTitle" value="${b.title.replace(/"/g,'&quot;')}" /></div>
+      <div class="form-group"><label>书名</label><input class="form-control" id="editTitle" value="${b.title.replace(/"/g, '&quot;')}" /></div>
       <div class="form-row">
-        <div class="form-group"><label>作者</label><input class="form-control" id="editAuthor" value="${(b.author||'').replace(/"/g,'&quot;')}" /></div>
+        <div class="form-group"><label>作者</label><input class="form-control" id="editAuthor" value="${(b.author || '').replace(/"/g, '&quot;')}" /></div>
         <div class="form-group"><label>分类</label>
           <select class="form-control" id="editCategory">
             <option value="">—— 请选择分类 ——</option>
@@ -1252,7 +2518,7 @@ function editBook(id) {
         <div class="form-group"><label>价格</label><input class="form-control" type="number" step="0.01" id="editPrice" value="${b.selling_price}" /></div>
         <div class="form-group"><label>新旧程度</label><input class="form-control" type="number" min="1" max="10" id="editCondition" value="${b.condition}" /></div>
       </div>
-      <div class="form-group"><label>描述</label><textarea class="form-control" id="editDesc">${(b.description||'').replace(/"/g,'&quot;')}</textarea></div>
+      <div class="form-group"><label>描述</label><textarea class="form-control" id="editDesc">${(b.description || '').replace(/"/g, '&quot;')}</textarea></div>
       <div class="form-group">
         <label>上传图片</label>
         <div style="display:flex;gap:.5rem;align-items:center;margin-bottom:.5rem">
@@ -1267,42 +2533,42 @@ function editBook(id) {
         <button class="btn btn-primary" onclick="doEditBook(${id})">保存</button>
       </div>
     `);
-    renderImagePreview('imagePreview');
-  });
-}
+        renderImagePreview('imagePreview');
+      });
+    }
 
-async function doEditBook(id) {
-  const title = document.getElementById('editTitle').value.trim();
-  const category_id = parseInt(document.getElementById('editCategory').value);
-  const selling_price = parseFloat(document.getElementById('editPrice').value);
-  const condition = parseInt(document.getElementById('editCondition').value);
-  const body = {};
-  if (title) body.title = title;
-  if (category_id && !isNaN(category_id)) body.category_id = category_id;
-  if (selling_price && !isNaN(selling_price)) body.selling_price = selling_price;
-  if (condition && !isNaN(condition)) body.condition = condition;
-  body.author = document.getElementById('editAuthor').value.trim();
-  body.description = document.getElementById('editDesc').value.trim();
-  body.images = pendingImages;
-  try {
-    await api('PUT', '/books/' + id, body);
-    closeModal();
-    toast('保存成功！', 'success');
-    showBookDetail(id);
-  } catch(e) { toast(e.message, 'error'); }
-}
+    async function doEditBook(id) {
+      const title = document.getElementById('editTitle').value.trim();
+      const category_id = parseInt(document.getElementById('editCategory').value);
+      const selling_price = parseFloat(document.getElementById('editPrice').value);
+      const condition = parseInt(document.getElementById('editCondition').value);
+      const body = {};
+      if (title) body.title = title;
+      if (category_id && !isNaN(category_id)) body.category_id = category_id;
+      if (selling_price && !isNaN(selling_price)) body.selling_price = selling_price;
+      if (condition && !isNaN(condition)) body.condition = condition;
+      body.author = document.getElementById('editAuthor').value.trim();
+      body.description = document.getElementById('editDesc').value.trim();
+      body.images = pendingImages;
+      try {
+        await api('PUT', '/books/' + id, body);
+        closeModal();
+        toast('保存成功！', 'success');
+        showBookDetail(id);
+      } catch (e) { toast(e.message, 'error'); }
+    }
 
-// =====================================================
-// Favorites
-// =====================================================
-async function loadFavorites() {
-  if (!getToken()) { document.getElementById('favoritesList').innerHTML = '<div class="empty"><p>请先登录</p></div>'; return; }
-  const container = document.getElementById('favoritesList');
-  try {
-    const res = await api('GET', '/favorites');
-    const favs = res.data || [];
-    if (!favs.length) { container.innerHTML = '<div class="empty"><div class="icon">❤️</div><p>还没有收藏的图书</p></div>'; return; }
-    container.innerHTML = '<div class="book-grid">' + favs.map(f => `
+    // =====================================================
+    // Favorites
+    // =====================================================
+    async function loadFavorites() {
+      if (!getToken()) { document.getElementById('favoritesList').innerHTML = '<div class="empty"><p>请先登录</p></div>'; return; }
+      const container = document.getElementById('favoritesList');
+      try {
+        const res = await api('GET', '/favorites');
+        const favs = res.data || [];
+        if (!favs.length) { container.innerHTML = '<div class="empty"><div class="icon">❤️</div><p>还没有收藏的图书</p></div>'; return; }
+        container.innerHTML = '<div class="book-grid">' + favs.map(f => `
       <div class="book-card" onclick="showBookDetail(${f.book?.id || f.book_id})">
         <div class="book-card-img">${f.book?.images?.length ? `<img src="${f.book.images[0]}" onerror="this.parentElement.innerHTML='<span class=\\'no-img\\'>📖</span>'"/>` : '<span class="no-img">📖</span>'}</div>
         <div class="book-card-body">
@@ -1312,196 +2578,196 @@ async function loadFavorites() {
         </div>
       </div>
     `).join('') + '</div>';
-  } catch(e) { container.innerHTML = '<div class="empty"><p>加载失败</p></div>'; }
-}
+      } catch (e) { container.innerHTML = '<div class="empty"><p>加载失败</p></div>'; }
+    }
 
-async function removeFav(bookId) {
-  try {
-    await api('DELETE', '/favorites/' + bookId);
-    toast('已取消收藏', 'info');
-    loadFavorites();
-  } catch(e) { toast(e.message, 'error'); }
-}
+    async function removeFav(bookId) {
+      try {
+        await api('DELETE', '/favorites/' + bookId);
+        toast('已取消收藏', 'info');
+        loadFavorites();
+      } catch (e) { toast(e.message, 'error'); }
+    }
 
-// =====================================================
-// Orders & Sales
-// =====================================================
-async function loadOrders() {
-  if (!getToken()) { document.getElementById('ordersList').innerHTML = '<div class="empty"><p>请先登录</p></div>'; return; }
-  const container = document.getElementById('ordersList');
-  try {
-    const res = await api('GET', '/orders');
-    const orders = res.data || [];
-    container.innerHTML = renderOrderTable(orders, 'buyer');
-  } catch(e) { container.innerHTML = '<div class="empty"><p>加载失败</p></div>'; }
-}
+    // =====================================================
+    // Orders & Sales
+    // =====================================================
+    async function loadOrders() {
+      if (!getToken()) { document.getElementById('ordersList').innerHTML = '<div class="empty"><p>请先登录</p></div>'; return; }
+      const container = document.getElementById('ordersList');
+      try {
+        const res = await api('GET', '/orders');
+        const orders = res.data || [];
+        container.innerHTML = renderOrderTable(orders, 'buyer');
+      } catch (e) { container.innerHTML = '<div class="empty"><p>加载失败</p></div>'; }
+    }
 
-async function loadSales() {
-  if (!getToken()) { document.getElementById('salesList').innerHTML = '<div class="empty"><p>请先登录</p></div>'; return; }
-  const container = document.getElementById('salesList');
-  try {
-    const res = await api('GET', '/orders/sales');
-    const orders = res.data || [];
-    container.innerHTML = renderOrderTable(orders, 'seller');
-  } catch(e) { container.innerHTML = '<div class="empty"><p>加载失败</p></div>'; }
-}
+    async function loadSales() {
+      if (!getToken()) { document.getElementById('salesList').innerHTML = '<div class="empty"><p>请先登录</p></div>'; return; }
+      const container = document.getElementById('salesList');
+      try {
+        const res = await api('GET', '/orders/sales');
+        const orders = res.data || [];
+        container.innerHTML = renderOrderTable(orders, 'seller');
+      } catch (e) { container.innerHTML = '<div class="empty"><p>加载失败</p></div>'; }
+    }
 
-function renderOrderTable(orders, role) {
-  if (!orders.length) return '<div class="empty"><div class="icon">📋</div><p>暂无订单</p></div>';
-  const statusMap = { 0: '<span class="badge badge-warning">待确认</span>', 1: '<span class="badge badge-info">已确认</span>', 2: '<span class="badge badge-success">已完成</span>', 3: '<span class="badge badge-gray">已取消</span>' };
-  return `<div class="table-wrap"><table>
-    <thead><tr><th>订单号</th><th>图书</th><th>${role==='buyer'?'卖家':'买家'}</th><th>金额</th><th>状态</th><th>时间</th><th>操作</th></tr></thead>
+    function renderOrderTable(orders, role) {
+      if (!orders.length) return '<div class="empty"><div class="icon">📋</div><p>暂无订单</p></div>';
+      const statusMap = { 0: '<span class="badge badge-warning">待确认</span>', 1: '<span class="badge badge-info">已确认</span>', 2: '<span class="badge badge-success">已完成</span>', 3: '<span class="badge badge-gray">已取消</span>' };
+      return `<div class="table-wrap"><table>
+    <thead><tr><th>订单号</th><th>图书</th><th>${role === 'buyer' ? '卖家' : '买家'}</th><th>金额</th><th>状态</th><th>时间</th><th>操作</th></tr></thead>
     <tbody>${orders.map(o => `<tr>
       <td><small>${o.order_no}</small></td>
-      <td><a onclick="showBookDetail(${o.book_id})" style="cursor:pointer">${o.book?.title||'#'+o.book_id}</a></td>
-      <td>${role==='buyer'?(o.seller?.nickname||'未知'):(o.buyer?.nickname||'未知')}</td>
+      <td><a onclick="showBookDetail(${o.book_id})" style="cursor:pointer">${o.book?.title || '#' + o.book_id}</a></td>
+      <td>${role === 'buyer' ? (o.seller?.nickname || '未知') : (o.buyer?.nickname || '未知')}</td>
       <td>¥${Number(o.price).toFixed(2)}</td>
-      <td>${statusMap[o.status]||'未知'}</td>
-      <td><small>${o.created_at?.substring(0,10)||''}</small></td>
+      <td>${statusMap[o.status] || '未知'}</td>
+      <td><small>${o.created_at?.substring(0, 10) || ''}</small></td>
       <td>${renderOrderActions(o, role)}</td>
     </tr>`).join('')}</tbody>
   </table></div>`;
-}
-
-function renderOrderActions(o, role) {
-  let actions = '';
-  // role === 'seller': can confirm (status 0)
-  if (role === 'seller' && o.status === 0) {
-    actions += `<button class="btn btn-success btn-sm" onclick="confirmOrder(${o.id})">确认</button> `;
-  }
-  // role === 'buyer': can cancel (status 0), complete (status 1)
-  if (role === 'buyer') {
-    if (o.status === 0) {
-      actions += `<button class="btn btn-sm btn-outline" onclick="cancelOrder(${o.id})">取消</button> `;
     }
-    if (o.status === 1) {
-      actions += `<button class="btn btn-success btn-sm" onclick="completeOrder(${o.id})">完成交易</button> `;
-    }
-  }
-  return actions || '-';
-}
 
-async function confirmOrder(id) {
-  try { await api('PUT', '/orders/' + id + '/confirm'); toast('已确认订单', 'success'); loadSales(); } catch(e) { toast(e.message, 'error'); }
-}
-async function completeOrder(id) {
-  try { await api('PUT', '/orders/' + id + '/complete'); toast('交易已完成', 'success'); loadOrders(); } catch(e) { toast(e.message, 'error'); }
-}
-async function cancelOrder(id) {
-  try { await api('PUT', '/orders/' + id + '/cancel'); toast('订单已取消', 'info'); loadOrders(); } catch(e) { toast(e.message, 'error'); }
-}
-
-// =====================================================
-// Messages
-// =====================================================
-let conversations = [];
-async function loadConversations() {
-  if (!getToken()) { document.getElementById('chatSidebar').innerHTML = '<div class="empty"><p>请先登录</p></div>'; return; }
-  const sidebar = document.getElementById('chatSidebar');
-  try {
-    const res = await api('GET', '/messages/conversations');
-    conversations = res.data || [];
-    if (!conversations.length) {
-      sidebar.innerHTML = '<div class="empty"><p>暂无消息</p></div>';
-      return;
+    function renderOrderActions(o, role) {
+      let actions = '';
+      // role === 'seller': can confirm (status 0)
+      if (role === 'seller' && o.status === 0) {
+        actions += `<button class="btn btn-success btn-sm" onclick="confirmOrder(${o.id})">确认</button> `;
+      }
+      // role === 'buyer': can cancel (status 0), complete (status 1)
+      if (role === 'buyer') {
+        if (o.status === 0) {
+          actions += `<button class="btn btn-sm btn-outline" onclick="cancelOrder(${o.id})">取消</button> `;
+        }
+        if (o.status === 1) {
+          actions += `<button class="btn btn-success btn-sm" onclick="completeOrder(${o.id})">完成交易</button> `;
+        }
+      }
+      return actions || '-';
     }
-    sidebar.innerHTML = conversations.map(c => {
-      const other = c.from_user_id == currentUser?.id ? c.to_user : c.from_user;
-      const name = other?.nickname || '用户' + (c.from_user_id == currentUser?.id ? c.to_user_id : c.from_user_id);
-      const isActive = chatOtherUserId && (c.from_user_id == chatOtherUserId || c.to_user_id == chatOtherUserId);
-      return `<div class="chat-sidebar-item ${isActive?'active':''}" onclick="openConversation(${c.from_user_id == currentUser?.id ? c.to_user_id : c.from_user_id})">
+
+    async function confirmOrder(id) {
+      try { await api('PUT', '/orders/' + id + '/confirm'); toast('已确认订单', 'success'); loadSales(); } catch (e) { toast(e.message, 'error'); }
+    }
+    async function completeOrder(id) {
+      try { await api('PUT', '/orders/' + id + '/complete'); toast('交易已完成', 'success'); loadOrders(); } catch (e) { toast(e.message, 'error'); }
+    }
+    async function cancelOrder(id) {
+      try { await api('PUT', '/orders/' + id + '/cancel'); toast('订单已取消', 'info'); loadOrders(); } catch (e) { toast(e.message, 'error'); }
+    }
+
+    // =====================================================
+    // Messages
+    // =====================================================
+    let conversations = [];
+    async function loadConversations() {
+      if (!getToken()) { document.getElementById('chatSidebar').innerHTML = '<div class="empty"><p>请先登录</p></div>'; return; }
+      const sidebar = document.getElementById('chatSidebar');
+      try {
+        const res = await api('GET', '/messages/conversations');
+        conversations = res.data || [];
+        if (!conversations.length) {
+          sidebar.innerHTML = '<div class="empty"><p>暂无消息</p></div>';
+          return;
+        }
+        sidebar.innerHTML = conversations.map(c => {
+          const other = c.from_user_id == currentUser?.id ? c.to_user : c.from_user;
+          const name = other?.nickname || '用户' + (c.from_user_id == currentUser?.id ? c.to_user_id : c.from_user_id);
+          const isActive = chatOtherUserId && (c.from_user_id == chatOtherUserId || c.to_user_id == chatOtherUserId);
+          return `<div class="chat-sidebar-item ${isActive ? 'active' : ''}" onclick="openConversation(${c.from_user_id == currentUser?.id ? c.to_user_id : c.from_user_id})">
         <div class="name">${name} ${!c.is_read && c.to_user_id == currentUser?.id ? '<span class="badge badge-danger" style="font-size:.65rem">新</span>' : ''}</div>
-        <div class="prev">${c.content?.substring(0,30)||'...'}</div>
-        <div class="time">${c.created_at?.substring(11,16)||''}</div>
+        <div class="prev">${c.content?.substring(0, 30) || '...'}</div>
+        <div class="time">${c.created_at?.substring(11, 16) || ''}</div>
       </div>`;
-    }).join('');
-    // If no conversation open, open the first one
-    if (!chatOtherUserId && conversations.length) {
-      const first = conversations[0];
-      openConversation(first.from_user_id == currentUser?.id ? first.to_user_id : first.from_user_id);
+        }).join('');
+        // If no conversation open, open the first one
+        if (!chatOtherUserId && conversations.length) {
+          const first = conversations[0];
+          openConversation(first.from_user_id == currentUser?.id ? first.to_user_id : first.from_user_id);
+        }
+      } catch (e) {
+        sidebar.innerHTML = '<div class="empty"><p>加载失败</p></div>';
+      }
     }
-  } catch(e) {
-    sidebar.innerHTML = '<div class="empty"><p>加载失败</p></div>';
-  }
-}
 
-async function openConversation(otherUserId) {
-  chatOtherUserId = otherUserId;
-  document.querySelectorAll('.chat-sidebar-item').forEach(el => {
-    el.classList.toggle('active', el.dataset?.uid == otherUserId);
-  });
-  // Get other user's name
-  const conv = conversations.find(c => c.from_user_id == otherUserId || c.to_user_id == otherUserId);
-  const other = conv ? (conv.from_user_id == currentUser?.id ? conv.to_user : conv.from_user) : null;
-  document.getElementById('chatHeader').textContent = '与 ' + (other?.nickname || '用户' + otherUserId) + ' 的聊天';
-  document.getElementById('chatInputArea').style.display = 'flex';
+    async function openConversation(otherUserId) {
+      chatOtherUserId = otherUserId;
+      document.querySelectorAll('.chat-sidebar-item').forEach(el => {
+        el.classList.toggle('active', el.dataset?.uid == otherUserId);
+      });
+      // Get other user's name
+      const conv = conversations.find(c => c.from_user_id == otherUserId || c.to_user_id == otherUserId);
+      const other = conv ? (conv.from_user_id == currentUser?.id ? conv.to_user : conv.from_user) : null;
+      document.getElementById('chatHeader').textContent = '与 ' + (other?.nickname || '用户' + otherUserId) + ' 的聊天';
+      document.getElementById('chatInputArea').style.display = 'flex';
 
-  // Load history
-  const msgsContainer = document.getElementById('chatMessages');
-  try {
-    const res = await api('GET', '/messages/conversations/' + otherUserId);
-    const msgs = res.data || [];
-    if (!msgs.length) {
-      msgsContainer.innerHTML = '<div class="empty"><p>开始聊天吧 👋</p></div>';
-      return;
-    }
-    msgsContainer.innerHTML = msgs.map(m => {
-      const sent = m.from_user_id == currentUser?.id;
-      return `<div class="chat-msg ${sent?'sent':'received'}">
+      // Load history
+      const msgsContainer = document.getElementById('chatMessages');
+      try {
+        const res = await api('GET', '/messages/conversations/' + otherUserId);
+        const msgs = res.data || [];
+        if (!msgs.length) {
+          msgsContainer.innerHTML = '<div class="empty"><p>开始聊天吧 👋</p></div>';
+          return;
+        }
+        msgsContainer.innerHTML = msgs.map(m => {
+          const sent = m.from_user_id == currentUser?.id;
+          return `<div class="chat-msg ${sent ? 'sent' : 'received'}">
         ${m.content}
-        <span class="time">${m.created_at?.substring(11,16)||''}</span>
+        <span class="time">${m.created_at?.substring(11, 16) || ''}</span>
       </div>`;
-    }).join('');
-    msgsContainer.scrollTop = msgsContainer.scrollHeight;
+        }).join('');
+        msgsContainer.scrollTop = msgsContainer.scrollHeight;
 
-    // Mark as read
-    if (!conv?.is_read) {
-      api('PUT', '/messages/read', { from_user_id: otherUserId }).catch(()=>{});
+        // Mark as read
+        if (!conv?.is_read) {
+          api('PUT', '/messages/read', { from_user_id: otherUserId }).catch(() => { });
+        }
+      } catch (e) {
+        msgsContainer.innerHTML = '<div class="empty"><p>加载失败</p></div>';
+      }
     }
-  } catch(e) {
-    msgsContainer.innerHTML = '<div class="empty"><p>加载失败</p></div>';
-  }
-}
 
-function openChatWith(userId) {
-  if (!getToken()) { toast('请先登录', 'error'); showPage('login'); return; }
-  showPage('messages');
-  setTimeout(() => openConversation(userId), 300);
-}
+    function openChatWith(userId) {
+      if (!getToken()) { toast('请先登录', 'error'); showPage('login'); return; }
+      showPage('messages');
+      setTimeout(() => openConversation(userId), 300);
+    }
 
-async function sendChatMessage() {
-  const input = document.getElementById('chatInput');
-  const content = input.value.trim();
-  if (!content || !chatOtherUserId) return;
-  input.value = '';
-  try {
-    await api('POST', '/messages', {
-      to_user_id: chatOtherUserId,
-      content
-    });
-    // Refresh
-    openConversation(chatOtherUserId);
-    loadConversations();
-  } catch(e) {
-    toast(e.message, 'error');
-  }
-}
+    async function sendChatMessage() {
+      const input = document.getElementById('chatInput');
+      const content = input.value.trim();
+      if (!content || !chatOtherUserId) return;
+      input.value = '';
+      try {
+        await api('POST', '/messages', {
+          to_user_id: chatOtherUserId,
+          content
+        });
+        // Refresh
+        openConversation(chatOtherUserId);
+        loadConversations();
+      } catch (e) {
+        toast(e.message, 'error');
+      }
+    }
 
-// =====================================================
-// Profile
-// =====================================================
-async function loadProfile() {
-  if (!getToken()) { document.getElementById('profileContent').innerHTML = '<div class="empty"><p>请先登录</p></div>'; return; }
-  const container = document.getElementById('profileContent');
-  try {
-    const res = await api('GET', '/user/profile');
-    const u = res.data;
-    container.innerHTML = `
+    // =====================================================
+    // Profile
+    // =====================================================
+    async function loadProfile() {
+      if (!getToken()) { document.getElementById('profileContent').innerHTML = '<div class="empty"><p>请先登录</p></div>'; return; }
+      const container = document.getElementById('profileContent');
+      try {
+        const res = await api('GET', '/user/profile');
+        const u = res.data;
+        container.innerHTML = `
       <div class="form-group"><label>手机号</label><input class="form-control" value="${u.phone}" disabled/></div>
-      <div class="form-group"><label>昵称</label><input class="form-control" id="pNickname" value="${(u.nickname||'').replace(/"/g,'&quot;')}"/></div>
-      <div class="form-group"><label>邮箱</label><input class="form-control" id="pEmail" value="${(u.email||'').replace(/"/g,'&quot;')}"/></div>
-      <div class="form-group"><label>专业</label><input class="form-control" id="pMajor" value="${(u.major||'').replace(/"/g,'&quot;')}"/></div>
-      <div class="form-group"><label>微信号</label><input class="form-control" id="pWechat" value="${(u.wechat||'').replace(/"/g,'&quot;')}"/></div>
+      <div class="form-group"><label>昵称</label><input class="form-control" id="pNickname" value="${(u.nickname || '').replace(/"/g, '&quot;')}"/></div>
+      <div class="form-group"><label>邮箱</label><input class="form-control" id="pEmail" value="${(u.email || '').replace(/"/g, '&quot;')}"/></div>
+      <div class="form-group"><label>专业</label><input class="form-control" id="pMajor" value="${(u.major || '').replace(/"/g, '&quot;')}"/></div>
+      <div class="form-group"><label>微信号</label><input class="form-control" id="pWechat" value="${(u.wechat || '').replace(/"/g, '&quot;')}"/></div>
       <button class="btn btn-primary" onclick="updateProfile()">保存修改</button>
       <hr style="margin:1.5rem 0;border:none;border-top:1px solid var(--gray-200)"/>
       <h4 style="margin-bottom:.75rem">修改密码</h4>
@@ -1509,107 +2775,107 @@ async function loadProfile() {
       <div class="form-group"><label>新密码</label><input class="form-control" type="password" id="newPwd" /></div>
       <button class="btn btn-outline" onclick="changePassword()">修改密码</button>
     `;
-  } catch(e) {
-    container.innerHTML = '<div class="empty"><p>加载失败</p></div>';
-  }
-}
+      } catch (e) {
+        container.innerHTML = '<div class="empty"><p>加载失败</p></div>';
+      }
+    }
 
-async function updateProfile() {
-  try {
-    await api('PUT', '/user/profile', {
-      nickname: document.getElementById('pNickname').value,
-      email: document.getElementById('pEmail').value,
-      major: document.getElementById('pMajor').value,
-      wechat: document.getElementById('pWechat').value
-    });
-    toast('保存成功', 'success');
-    // Refresh user info
-    const res = await api('GET', '/user/profile');
-    currentUser = res.data;
-    updateNavbar();
-  } catch(e) { toast(e.message, 'error'); }
-}
+    async function updateProfile() {
+      try {
+        await api('PUT', '/user/profile', {
+          nickname: document.getElementById('pNickname').value,
+          email: document.getElementById('pEmail').value,
+          major: document.getElementById('pMajor').value,
+          wechat: document.getElementById('pWechat').value
+        });
+        toast('保存成功', 'success');
+        // Refresh user info
+        const res = await api('GET', '/user/profile');
+        currentUser = res.data;
+        updateNavbar();
+      } catch (e) { toast(e.message, 'error'); }
+    }
 
-async function changePassword() {
-  const oldPwd = document.getElementById('oldPwd').value;
-  const newPwd = document.getElementById('newPwd').value;
-  if (!oldPwd || !newPwd) { toast('请填写完整', 'error'); return; }
-  try {
-    await api('PUT', '/user/password', { old_password: oldPwd, new_password: newPwd });
-    toast('密码已修改', 'success');
-    document.getElementById('oldPwd').value = '';
-    document.getElementById('newPwd').value = '';
-  } catch(e) { toast(e.message, 'error'); }
-}
+    async function changePassword() {
+      const oldPwd = document.getElementById('oldPwd').value;
+      const newPwd = document.getElementById('newPwd').value;
+      if (!oldPwd || !newPwd) { toast('请填写完整', 'error'); return; }
+      try {
+        await api('PUT', '/user/password', { old_password: oldPwd, new_password: newPwd });
+        toast('密码已修改', 'success');
+        document.getElementById('oldPwd').value = '';
+        document.getElementById('newPwd').value = '';
+      } catch (e) { toast(e.message, 'error'); }
+    }
 
-// =====================================================
-// Admin
-// =====================================================
-async function loadAdmin() {
-  if (!getToken()) { document.getElementById('statsContainer').innerHTML = ''; document.getElementById('adminBooksTable').innerHTML = '<div class="empty"><p>请先登录</p></div>'; return; }
-  loadStats();
-  loadAdminBooks();
-  loadAdminCategories();
-}
+    // =====================================================
+    // Admin
+    // =====================================================
+    async function loadAdmin() {
+      if (!getToken()) { document.getElementById('statsContainer').innerHTML = ''; document.getElementById('adminBooksTable').innerHTML = '<div class="empty"><p>请先登录</p></div>'; return; }
+      loadStats();
+      loadAdminBooks();
+      loadAdminCategories();
+    }
 
-async function loadStats() {
-  try {
-    const res = await api('GET', '/admin/statistics');
-    const s = res.data || {};
-    document.getElementById('statsContainer').innerHTML = `
-      <div class="stat-card"><div class="num">${s.user_count||0}</div><div class="label">用户总数</div></div>
-      <div class="stat-card"><div class="num">${s.book_count||0}</div><div class="label">图书总数</div></div>
-      <div class="stat-card"><div class="num">${s.order_count||0}</div><div class="label">订单总数</div></div>
-      <div class="stat-card"><div class="num">${s.completed_orders||0}</div><div class="label">已完成交易</div></div>
+    async function loadStats() {
+      try {
+        const res = await api('GET', '/admin/statistics');
+        const s = res.data || {};
+        document.getElementById('statsContainer').innerHTML = `
+      <div class="stat-card"><div class="num">${s.user_count || 0}</div><div class="label">用户总数</div></div>
+      <div class="stat-card"><div class="num">${s.book_count || 0}</div><div class="label">图书总数</div></div>
+      <div class="stat-card"><div class="num">${s.order_count || 0}</div><div class="label">订单总数</div></div>
+      <div class="stat-card"><div class="num">${s.completed_orders || 0}</div><div class="label">已完成交易</div></div>
     `;
-  } catch(e) {}
-}
+      } catch (e) { }
+    }
 
-async function loadAdminBooks() {
-  const container = document.getElementById('adminBooksTable');
-  try {
-    const res = await api('GET', '/admin/books?page=1&page_size=50');
-    const books = res.data || [];
-    if (!books.length) { container.innerHTML = '<div class="empty"><p>暂无图书</p></div>'; return; }
-    container.innerHTML = `<div class="table-wrap"><table>
+    async function loadAdminBooks() {
+      const container = document.getElementById('adminBooksTable');
+      try {
+        const res = await api('GET', '/admin/books?page=1&page_size=50');
+        const books = res.data || [];
+        if (!books.length) { container.innerHTML = '<div class="empty"><p>暂无图书</p></div>'; return; }
+        container.innerHTML = `<div class="table-wrap"><table>
       <thead><tr><th>ID</th><th>书名</th><th>卖家</th><th>价格</th><th>状态</th><th>操作</th></tr></thead>
       <tbody>${books.map(b => `<tr>
         <td>${b.id}</td>
         <td><a onclick="showBookDetail(${b.id})" style="cursor:pointer">${b.title}</a></td>
-        <td>${b.user?.nickname||'未知'}</td>
+        <td>${b.user?.nickname || '未知'}</td>
         <td>¥${Number(b.selling_price).toFixed(2)}</td>
-        <td><span class="${b.status===1?'badge-success':b.status===2?'badge-danger':'badge-gray'}">${b.status===1?'在售':b.status===2?'已售':'下架'}</span></td>
+        <td><span class="${b.status === 1 ? 'badge-success' : b.status === 2 ? 'badge-danger' : 'badge-gray'}">${b.status === 1 ? '在售' : b.status === 2 ? '已售' : '下架'}</span></td>
         <td>${b.status === 0 ? `<button class="btn btn-success btn-sm" onclick="adminUpdateBookStatus(${b.id},1)">上架</button>` : `<button class="btn btn-danger btn-sm" onclick="adminUpdateBookStatus(${b.id},0)">下架</button>`}</td>
       </tr>`).join('')}</tbody>
     </table></div>`;
-  } catch(e) { container.innerHTML = '<div class="empty"><p>加载失败</p></div>'; }
-}
+      } catch (e) { container.innerHTML = '<div class="empty"><p>加载失败</p></div>'; }
+    }
 
-async function adminUpdateBookStatus(id, status) {
-  try { await api('PUT', '/admin/books/' + id + '/status', { status }); toast('操作成功', 'success'); loadAdminBooks(); } catch(e) { toast(e.message, 'error'); }
-}
+    async function adminUpdateBookStatus(id, status) {
+      try { await api('PUT', '/admin/books/' + id + '/status', { status }); toast('操作成功', 'success'); loadAdminBooks(); } catch (e) { toast(e.message, 'error'); }
+    }
 
-async function loadAdminCategories() {
-  const container = document.getElementById('adminCategories');
-  try {
-    const res = await api('GET', '/admin/categories');
-    const cats = res.data || [];
-    if (!cats.length) { container.innerHTML = '<div class="empty"><p>暂无分类</p></div>'; return; }
-    container.innerHTML = `<div class="table-wrap"><table>
+    async function loadAdminCategories() {
+      const container = document.getElementById('adminCategories');
+      try {
+        const res = await api('GET', '/admin/categories');
+        const cats = res.data || [];
+        if (!cats.length) { container.innerHTML = '<div class="empty"><p>暂无分类</p></div>'; return; }
+        container.innerHTML = `<div class="table-wrap"><table>
       <thead><tr><th>ID</th><th>名称</th><th>父分类ID</th><th>排序</th><th>操作</th></tr></thead>
       <tbody>${cats.map(c => `<tr>
         <td>${c.id}</td>
         <td>${c.name}</td>
-        <td>${c.parent_id||'-'}</td>
-        <td>${c.sort_order||0}</td>
+        <td>${c.parent_id || '-'}</td>
+        <td>${c.sort_order || 0}</td>
         <td><button class="btn btn-danger btn-sm" onclick="adminDeleteCategory(${c.id})">删除</button></td>
       </tr>`).join('')}</tbody>
     </table></div>`;
-  } catch(e) { container.innerHTML = '<div class="empty"><p>加载失败</p></div>'; }
-}
+      } catch (e) { container.innerHTML = '<div class="empty"><p>加载失败</p></div>'; }
+    }
 
-function openCategoryModal() {
-  openModal(`
+    function openCategoryModal() {
+      openModal(`
     <h3>添加分类</h3>
     <div class="form-group"><label>名称 <span style="color:var(--danger)">*</span></label><input class="form-control" id="catName" /></div>
     <div class="form-group"><label>父分类ID</label><input class="form-control" type="number" id="catParent" value="0" /></div>
@@ -1619,63 +2885,64 @@ function openCategoryModal() {
       <button class="btn btn-primary" onclick="adminCreateCategory()">添加</button>
     </div>
   `);
-}
+    }
 
-async function adminCreateCategory() {
-  const name = document.getElementById('catName').value.trim();
-  if (!name) { toast('请输入名称', 'error'); return; }
-  try {
-    await api('POST', '/admin/categories', {
-      name, parent_id: parseInt(document.getElementById('catParent').value) || 0,
-      sort_order: parseInt(document.getElementById('catSort').value) || 0
+    async function adminCreateCategory() {
+      const name = document.getElementById('catName').value.trim();
+      if (!name) { toast('请输入名称', 'error'); return; }
+      try {
+        await api('POST', '/admin/categories', {
+          name, parent_id: parseInt(document.getElementById('catParent').value) || 0,
+          sort_order: parseInt(document.getElementById('catSort').value) || 0
+        });
+        closeModal();
+        toast('添加成功', 'success');
+        loadAdminCategories();
+      } catch (e) { toast(e.message, 'error'); }
+    }
+
+    async function adminDeleteCategory(id) {
+      if (!confirm('确定删除此分类？')) return;
+      try { await api('DELETE', '/admin/categories/' + id); toast('已删除', 'success'); loadAdminCategories(); } catch (e) { toast(e.message, 'error'); }
+    }
+
+    // =====================================================
+    // Modal
+    // =====================================================
+    function openModal(html) {
+      document.getElementById('modalContent').innerHTML = html;
+      document.getElementById('modalOverlay').classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.remove('open');
+    }
+
+    // Close modal on overlay click
+    document.getElementById('modalOverlay').addEventListener('click', function (e) {
+      if (e.target === this) closeModal();
     });
-    closeModal();
-    toast('添加成功', 'success');
-    loadAdminCategories();
-  } catch(e) { toast(e.message, 'error'); }
-}
 
-async function adminDeleteCategory(id) {
-  if (!confirm('确定删除此分类？')) return;
-  try { await api('DELETE', '/admin/categories/' + id); toast('已删除', 'success'); loadAdminCategories(); } catch(e) { toast(e.message, 'error'); }
-}
-
-// =====================================================
-// Modal
-// =====================================================
-function openModal(html) {
-  document.getElementById('modalContent').innerHTML = html;
-  document.getElementById('modalOverlay').classList.add('open');
-}
-
-function closeModal() {
-  document.getElementById('modalOverlay').classList.remove('open');
-}
-
-// Close modal on overlay click
-document.getElementById('modalOverlay').addEventListener('click', function(e) {
-  if (e.target === this) closeModal();
-});
-
-// =====================================================
-// Init
-// =====================================================
-(async function init() {
-  // Check if already logged in
-  if (getToken()) {
-    try {
-      const res = await api('GET', '/user/profile');
-      currentUser = res.data;
+    // =====================================================
+    // Init
+    // =====================================================
+    (async function init() {
+      // Check if already logged in
+      if (getToken()) {
+        try {
+          const res = await api('GET', '/user/profile');
+          currentUser = res.data;
+          updateNavbar();
+          showPage('home');
+          return;
+        } catch (e) {
+          clearToken();
+        }
+      }
       updateNavbar();
       showPage('home');
-      return;
-    } catch(e) {
-      clearToken();
-    }
-  }
-  updateNavbar();
-  showPage('home');
-})();
-</script>
+    })();
+  </script>
 </body>
+
 </html>
