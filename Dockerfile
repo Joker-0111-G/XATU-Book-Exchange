@@ -1,8 +1,9 @@
 # ========== 构建阶段 ==========
 FROM golang:1.25-alpine AS builder
 
-# 安装 git（go mod 需要）
-RUN apk add --no-cache git
+# 安装 git（go mod 需要），使用阿里云镜像源加速
+RUN sed -i 's|dl-cdn.alpinelinux.org|mirrors.aliyun.com|g' /etc/apk/repositories && \
+    apk add --no-cache git
 
 WORKDIR /build
 
@@ -21,7 +22,9 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o xatu-server .
 FROM alpine:3.21
 
 # 安装 ca-certificates（HTTPS 调用需要）+ tzdata（时区）
-RUN apk add --no-cache ca-certificates tzdata && \
+# 使用阿里云镜像源加速国内下载
+RUN sed -i 's|dl-cdn.alpinelinux.org|mirrors.aliyun.com|g' /etc/apk/repositories && \
+    apk add --no-cache ca-certificates tzdata && \
     cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
     echo "Asia/Shanghai" > /etc/timezone
 
@@ -30,7 +33,7 @@ WORKDIR /app
 # 从构建阶段复制二进制文件
 COPY --from=builder /build/xatu-server .
 
-# 复制配置文件
+# 🔴 复制 Docker 专用配置（mysql host = docker 服务名，而非 127.0.0.1）
 COPY backend/config/config.docker.yaml ./config/config.yaml
 
 # 复制前端静态文件
