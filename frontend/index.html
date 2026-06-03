@@ -1379,6 +1379,7 @@
         order: 3;
         width: 100%;
         overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
       }
 
       .book-detail {
@@ -1398,24 +1399,184 @@
       }
 
       .book-grid {
-        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: .75rem;
+      }
+
+      .banner {
+        height: 220px;
+      }
+
+      .banner-slide .banner-inner .banner-icon {
+        font-size: 2.2rem;
+      }
+
+      .banner-slide .banner-inner h2 {
+        font-size: 1rem;
+        padding: 0 .5rem;
+        text-align: center;
+        word-break: break-word;
+      }
+
+      .banner-slide .banner-inner p {
+        font-size: .85rem;
+        padding: 0 .5rem;
+        text-align: center;
+      }
+
+      .banner-slide .banner-inner .banner-stat span {
+        font-size: .75rem;
+        padding: .15rem .6rem;
+      }
+
+      .main-content {
+        padding: .75rem;
+      }
+
+      .features {
+        grid-template-columns: 1fr;
+        gap: .5rem;
+      }
+
+      .feature-item {
+        padding: .5rem .75rem;
+      }
+
+      .feature-item .fi-icon {
+        font-size: 1.2rem;
+      }
+
+      .feature-item .fi-text {
+        font-size: .78rem;
+      }
+
+      .footer-inner {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .filters {
+        padding: .75rem;
+        gap: .5rem;
+      }
+
+      .filter-group select,
+      .filter-group input {
+        min-width: 70px;
+        font-size: .8rem;
+        padding: .35rem .4rem;
+      }
+
+      .table-wrap {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .table-wrap table {
+        min-width: 600px;
+      }
+
+      th, td {
+        padding: .5rem .6rem;
+        font-size: .8rem;
+      }
+
+      .modal {
+        width: 95%;
+        padding: 1.25rem;
+      }
+
+      .book-card-body {
+        padding: .6rem .75rem;
+      }
+
+      .book-card-body h3 {
+        font-size: .9rem;
+      }
+
+      .book-card-body .price {
+        font-size: 1rem;
+      }
+
+      .book-detail-main-img {
+        height: 240px;
+      }
+
+      .book-detail-info h2 {
+        font-size: 1.2rem;
+      }
+
+      .book-detail-info .price-lg {
+        font-size: 1.3rem;
+      }
+
+      .categories {
+        gap: .35rem;
+      }
+
+      .category-chip {
+        font-size: .78rem;
+        padding: .3rem .75rem;
+      }
+
+      .chat-messages {
+        padding: .5rem;
+      }
+
+      .chat-msg {
+        max-width: 85%;
+        font-size: .82rem;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: .5rem;
+      }
+
+      .stat-card {
+        padding: 1rem .5rem;
+      }
+
+      .stat-card .num {
+        font-size: 1.5rem;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .book-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: .5rem;
+      }
+
+      .book-card-img {
+        height: 120px;
       }
 
       .banner {
         height: 200px;
       }
 
-      .main-content {
-        padding: 1rem;
+      .banner-slide .banner-inner h2 {
+        font-size: .9rem;
       }
 
-      .features {
+      .filter-group select,
+      .filter-group input {
+        min-width: 60px;
+        font-size: .75rem;
+      }
+
+      .navbar .logo {
+        font-size: 1.1rem;
+      }
+
+      .nav-links a {
+        padding: .4rem .55rem;
+        font-size: .78rem;
+      }
+
+      .stats-grid {
         grid-template-columns: 1fr 1fr;
-      }
-
-      .footer-inner {
-        flex-direction: column;
-        text-align: center;
       }
 
       .features {
